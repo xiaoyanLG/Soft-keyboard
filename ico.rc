@@ -1,0 +1,58 @@
+#include "winres.h"
+
+#define MAJOR 1
+#define MINOR 0
+#define PATCH 0
+
+#define VERSION_STR "1.0.0.0"
+
+#define PRODUCT_ICON           "Keyboard.ico"     // 图标
+
+#define FILE_VERSION           MAJOR,MINOR,PATCH   // 文件版本
+#define FILE_VERSION_STR       VERSION_STR
+#define PRODUCT_VERSION        FILE_VERSION        // 产品版本
+#define PRODUCT_VERSION_STR    FILE_VERSION_STR
+#define COMPANY_NAME           "xiaoyanLG"
+#define INTERNAL_NAME          "XYInputMethod.exe"
+#define FILE_DESCRIPTION       "XYInputMethod"  // 文件说明
+#define LEGAL_COPYRIGHT        "禁止用于商业用途(QQ 624080979)" // 版权
+#define ORIGINAL_FILE_NAME     "XYInputMethod.exe"    // 原始文件名
+#define PRODUCT_NAME           "XYInputMethod"        // 产品名称
+#define ORGANIZATION_DOMAIN    "https://github.com/xiaoyanLG"  // 域名
+
+// 图标
+IDI_ICON1       ICON      PRODUCT_ICON
+
+// 版本信息
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION FILE_VERSION
+ PRODUCTVERSION PRODUCT_VERSION
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "CompanyName", COMPANY_NAME
+            VALUE "FileDescription", FILE_DESCRIPTION
+            VALUE "FileVersion", FILE_VERSION_STR
+            VALUE "InternalName", INTERNAL_NAME
+            VALUE "LegalCopyright", LEGAL_COPYRIGHT
+            VALUE "OriginalFilename", ORIGINAL_FILE_NAME
+            VALUE "ProductName", PRODUCT_NAME
+            VALUE "ProductVersion", PRODUCT_VERSION_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
