@@ -13,11 +13,11 @@
 #define PRODUCT_VERSION        FILE_VERSION        // 产品版本
 #define PRODUCT_VERSION_STR    FILE_VERSION_STR
 #define COMPANY_NAME           "xiaoyanLG"
-#define INTERNAL_NAME          "XYInputMethod.exe"
-#define FILE_DESCRIPTION       "XYInputMethod"  // 文件说明
+#define INTERNAL_NAME          "Soft-keyboard.exe"
+#define FILE_DESCRIPTION       "Soft-keyboard"  // 文件说明
 #define LEGAL_COPYRIGHT        "禁止用于商业用途(QQ 624080979)" // 版权
-#define ORIGINAL_FILE_NAME     "XYInputMethod.exe"    // 原始文件名
-#define PRODUCT_NAME           "XYInputMethod"        // 产品名称
+#define ORIGINAL_FILE_NAME     "Soft-keyboard.exe"    // 原始文件名
+#define PRODUCT_NAME           "Soft-keyboard"        // 产品名称
 #define ORGANIZATION_DOMAIN    "https://github.com/xiaoyanLG"  // 域名
 
 // 图标
