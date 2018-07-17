@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="GBK"?>
+<XYInputMethod>
+    <defaultButtonStyle1>
+        <key value="0"/>
+        <pressed value="0"/>
+        <textFont pixelSize="18" weight="50" family="SimSun"/>
+        <backgroundColor color="#daf3ffff"/>
+        <textPen color="#4f9cc0ff" width="1"/>
+        <borderPen color="#78b7e4ff" width="1"/>
+        <borderFont pixelSize="18" weight="50" family="SimSun"/>
+        <backImage filepath="filepath"/>
+    </defaultButtonStyle1>
+    <defaultButtonStyle1_pressed>
+        <key value="0"/>
+        <pressed value="1"/>
+        <textFont pixelSize="18" weight="50" family="SimSun"/>
+        <backgroundColor color="#b2ddf2ff"/>
+        <textPen color="#4f9cc0ff" width="1"/>
+        <borderPen color="#78b7e4ff" width="1"/>
+        <borderFont pixelSize="18" weight="50" family="SimSun"/>
+        <backImage filepath="filepath"/>
+    </defaultButtonStyle1_pressed>
+    <defaultButtonStyle2>
+        <key value="0"/>
+        <pressed value="0"/>
+        <textFont pixelSize="18" weight="50" family="SimSun"/>
+        <backgroundColor color="#62bae5ff"/>
+        <textPen color="#ffffffff" width="1"/>
+        <borderPen color="#78b7e4ff" width="1"/>
+        <borderFont pixelSize="18" weight="50" family="SimSun"/>
+        <backImage filepath="filepath"/>
+    </defaultButtonStyle2>
+    <defaultButtonStyle2_pressed>
+        <key value="0"/>
+        <pressed value="1"/>
+        <textFont pixelSize="18" weight="50" family="SimSun"/>
+        <backgroundColor color="#58aed7ff"/>
+        <textPen color="#4f9cc0ff" width="1"/>
+        <borderPen color="#78b7e4ff" width="1"/>
+        <borderFont pixelSize="18" weight="50" family="SimSun"/>
+        <backImage filepath="filepath"/>
+    </defaultButtonStyle2_pressed>
+    <popupButtonStyle>
+        <key value="0"/>
+        <pressed value="0"/>
+        <textFont pixelSize="26" weight="50" family="SimSun"/>
+        <backgroundColor color="#62bae5ff"/>
+        <textPen color="#ffffffff" width="1"/>
+        <borderPen color="#57a3c8ff" width="1"/>
+        <borderFont pixelSize="26" weight="50" family="SimSun"/>
+        <backImage filepath="filepath"/>
+    </popupButtonStyle>
+    <topColor color="#daf3ffffff"/>
+    <trianglePen color="#4f9cc0ff" width="3"/>
+    <trianglePressedBKColor color="#b2ddf2ff"/>
+    <triangleBKPixmap filepath="filepath"/>
+    <triangleBKPressedPixmap filepath="filepath"/>
+    <bottomColor1 color="#eaf6ffff"/>
+    <bottomColor2 color="#eaf6ffff"/>
+    <borderPen color="#a8cfe2ff" width="1"/>
+    <inputLettersColor color="#4f9cc0ff"/>
+    <inputLettersFont pixelSize="20" weight="50" family="SimSun"/>
+    <candidateTextPen color="#4f9cc0ff" width="1"/>
+    <candidateTextPressedBKColor color="#b2ddf2ff"/>
+    <topBKPixmap filepath="filepath"/>
+    <bottomBKPixmap filepath="filepath"/>
+    <candidateTextFont pixelSize="20" weight="50" family="SimSun"/>
+</XYInputMethod>
