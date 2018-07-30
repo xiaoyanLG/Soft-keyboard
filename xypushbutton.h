@@ -13,6 +13,8 @@ public:
     bool isChecked();
     static bool isChinese();
     static void resizeAllPerfect(const QSize &size);
+    static QString EnText();
+    static QString zhongText();
     QSize sizeHint() const;
 
 signals:

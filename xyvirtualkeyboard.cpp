@@ -515,6 +515,15 @@ XYVirtualKeyboard::XYVirtualKeyboard(QWidget *parent)
     funcHView = new XYHDragableTranslateView;
     funcHView->setUnitMinWidth(50);
     funcHView->setUnitMinHeight(40);
+#if QT_VERSION < 0x050000
+    funcHView->dataStrings << QString::fromUtf8("换肤")
+                           << QString::fromUtf8("表情")
+                           << QString::fromUtf8("设置")
+                           << QString::fromUtf8("功能")
+                           << QString::fromUtf8("手势")
+                           << QString::fromUtf8("搜索")
+                           << QString::fromUtf8("更多");
+#else
     funcHView->dataStrings << QStringLiteral("换肤")
                            << QStringLiteral("表情")
                            << QStringLiteral("设置")
@@ -522,6 +531,7 @@ XYVirtualKeyboard::XYVirtualKeyboard(QWidget *parent)
                            << QStringLiteral("手势")
                            << QStringLiteral("搜索")
                            << QStringLiteral("更多");
+#endif
     connect(funcHView, SIGNAL(clicked(QString,int)),
             this, SLOT(funcClicked(QString,int)));
     funcDragableWidget = new XYDragableWidget(funcHView,

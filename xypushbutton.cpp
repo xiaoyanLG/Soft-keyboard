@@ -51,6 +51,20 @@ void XYPushButton::resizeAllPerfect(const QSize &size)
     }
 }
 
+QString XYPushButton::EnText()
+{
+    return QString::fromUtf8("En");
+}
+
+QString XYPushButton::zhongText()
+{
+#if QT_VERSION < 0x050000
+            return QString::fromUtf8("中");
+#else
+            return QStringLiteral("中");
+#endif
+}
+
 QSize XYPushButton::sizeHint() const
 {
     return QSize(60, 38);
@@ -160,12 +174,8 @@ void XYPushButton::paintEvent(QPaintEvent *event)
         if (chinese)
         {
             font.setPixelSize(font.pixelSize() - 4);
-            left_text = QString::fromUtf8("En/");
-#if QT_VERSION < 0x050000
-            right_text = QString::fromUtf8("中");
-#else
-            right_text = QString::fromLocal8Bit("中");
-#endif
+            left_text = XYPushButton::EnText() + "/";
+            right_text = XYPushButton::zhongText();
             font.setBold(false);
             font.setPixelSize(font.pixelSize() - 2);
             painter.setFont(font);
@@ -178,12 +188,8 @@ void XYPushButton::paintEvent(QPaintEvent *event)
         else
         {
             font.setPixelSize(font.pixelSize() - 4);
-            left_text = QString::fromUtf8("En");
-#if QT_VERSION < 0x050000
-            right_text = QString::fromUtf8("/中");
-#else
-            right_text = QString::fromLocal8Bit("/中");
-#endif
+            left_text = XYPushButton::EnText();
+            right_text = "/" + XYPushButton::zhongText();
             font.setBold(true);
             painter.setFont(font);
             painter.drawText(left, left_text, QTextOption(Qt::AlignRight|Qt::AlignVCenter));

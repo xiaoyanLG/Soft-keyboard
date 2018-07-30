@@ -59,12 +59,8 @@ void XYTempWindows::paintEvent(QPaintEvent *event)
         QString left_text, right_text;
         if (XYPushButton::isChinese())
         {
-            left_text = QString::fromUtf8("En/");
-#if QT_VERSION < 0x050000
-            right_text = QString::fromUtf8("中");
-#else
-            right_text = QString::fromLocal8Bit("中");
-#endif
+            left_text = XYPushButton::EnText() + "/";
+            right_text = XYPushButton::zhongText();
             font.setBold(false);
             font.setPixelSize(font.pixelSize() - 2);
             painter.setFont(font);
@@ -76,12 +72,8 @@ void XYTempWindows::paintEvent(QPaintEvent *event)
         }
         else
         {
-            left_text = QString::fromUtf8("En");
-#if QT_VERSION < 0x050000
-            right_text = QString::fromUtf8("/中");
-#else
-            right_text = QString::fromLocal8Bit("/中");
-#endif
+            left_text = XYPushButton::EnText();
+            right_text = "/" + XYPushButton::zhongText();
             font.setBold(true);
             painter.setFont(font);
             painter.drawText(left, left_text, QTextOption(Qt::AlignRight|Qt::AlignVCenter));
