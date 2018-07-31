@@ -9,6 +9,15 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QVBoxLayout>
+#include <QInputMethodEvent>
+
+static void sendInputText(const QString &text)
+{
+    QInputMethodEvent *event = new QInputMethodEvent;
+    event->setCommitString(text);
+    qApp->postEvent(qApp->focusWidget(), event);
+}
+
 #endif
 #include <QDebug>
 int main(int argc, char *argv[])
@@ -27,6 +36,7 @@ int main(int argc, char *argv[])
     layout->addWidget(new QTextEdit);
     layout->addWidget(new QLineEdit);
     widget.show();
+    QObject::connect(XYVirtualKeyboard::getInstance(), &XYVirtualKeyboard::send_commit, &sendInputText);
 #endif
 
     a.setQuitOnLastWindowClosed(true);

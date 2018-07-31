@@ -25,7 +25,7 @@
 #include "xykeyboardfilter.h"
 #include "chineseInput/xyinputsearchinterface.h"
 
-// #define XYINPUT    // 如果不定义使用google引擎
+//#define XYINPUT    // 如果不定义使用google引擎
 
 XYVirtualKeyboard *XYVirtualKeyboard::instance = NULL;
 
@@ -41,10 +41,21 @@ XYVirtualKeyboard *XYVirtualKeyboard::getInstance()
 void XYVirtualKeyboard::initPinyinDictionary()
 {
 #ifdef XYINPUT
-    bool ret = XYInputSearchInterface::getInstance()->initInputBase(qApp->applicationDirPath() + "/chineseBase/chinese.db");
+    bool ret = XYInputSearchInterface::getInstance()->initInputBase(qApp->applicationDirPath()
+                                                                    + "/chineseBase/chinese.db");
+    if (!ret)
+    {
+        ret = XYInputSearchInterface::getInstance()->initInputBase(qApp->applicationDirPath()
+                                     + "/../../Soft-keyboard/chineseInput/chineseBase/chinese.db");
+    }
 #else
     googlePinyin = new pinyin_im;
-    bool ret = googlePinyin->init("../Soft-keyboard/libgooglepinyin/dict");
+    bool ret = googlePinyin->init(qApp->applicationDirPath() + "/dict");
+    if (!ret)
+    {
+        ret = googlePinyin->init(qApp->applicationDirPath()
+                                 +  "/../../Soft-keyboard/libgooglepinyin/dict");
+    }
 #endif
     if (!ret) {
         QMessageBox::warning(NULL, "warning", "Load lexicon failed!", QMessageBox::Ok);
@@ -468,7 +479,7 @@ XYVirtualKeyboard::XYVirtualKeyboard(QWidget *parent)
                    | Qt::WindowStaysOnTopHint
                    | Qt::Tool);
 #if QT_VERSION >= 0x050000
-//    this->setWindowFlags(this->windowFlags() | Qt::WindowDoesNotAcceptFocus);
+    this->setWindowFlags(this->windowFlags() | Qt::WindowDoesNotAcceptFocus);
 #endif
 
     connect(this, SIGNAL(triangleBtnClicked()), this, SLOT(triangleBtnClickedOP()));
@@ -1061,7 +1072,7 @@ void XYVirtualKeyboard::userSelectChinese(const QString &text, int index)
     if (lists.isEmpty())
     {
         // 这里完成输入了
-        qDebug() << alreadySelectTranslates.join("") + text;
+        emit send_commit(alreadySelectTranslates.join("") + text);
         clear_history();
     }
     else
