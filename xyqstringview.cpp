@@ -43,7 +43,7 @@ bool XYQStringView::event(QEvent *event)
         {
             emit stringPressed(dataStrings.at(index),
                                mapToGlobal(QPoint(pressRect.x(), pressRect.y())));
-            update();
+            update(pressRect);
         }
         return true;
     }
@@ -56,7 +56,7 @@ bool XYQStringView::event(QEvent *event)
                 int index = dataRects.indexOf(pressRect);
                 emit clicked(dataStrings.at(index), index);
             }
-            update();
+            update(pressRect);
             emit stringPressed("", QPoint());
         }
         pressed = false;
@@ -74,8 +74,8 @@ bool XYQStringView::event(QEvent *event)
             {
                 emit stringPressed("", QPoint());
                 pressed = false;
+                update(pressRect);
                 pressRect = QRect();
-                update();
             }
         }
         return true;
