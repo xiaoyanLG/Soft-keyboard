@@ -25,7 +25,7 @@
 #include "xykeyboardfilter.h"
 #include "chineseInput/xyinputsearchinterface.h"
 
-//#define XYINPUT    // 如果不定义使用google引擎
+#define XYINPUT    // 如果不定义使用google引擎
 
 XYVirtualKeyboard *XYVirtualKeyboard::instance = NULL;
 
