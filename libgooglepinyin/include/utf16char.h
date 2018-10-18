@@ -18,7 +18,6 @@
 #define PINYINIME_INCLUDE_UTF16CHAR_H__
 
 #include <stdlib.h>
-#include <inttypes.h>
 
 namespace ime_pinyin {
 
@@ -26,7 +25,7 @@ namespace ime_pinyin {
 extern "C" {
 #endif
 
-  typedef uint16_t char16;
+  typedef unsigned short char16;
 
   // Get a token from utf16_str,
   // Returned pointer is a '\0'-terminated utf16 string, or NULL

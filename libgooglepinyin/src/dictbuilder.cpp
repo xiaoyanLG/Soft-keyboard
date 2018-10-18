@@ -322,7 +322,7 @@ void DictBuilder::get_top_lemmas() {
   if (kPrintDebug0) {
     printf("\n------Top Lemmas------------------\n");
     for (size_t pos = 0; pos < top_lmas_num_; pos++) {
-      printf("--%zd, idx:%06zd, score:%.5f\n", pos, top_lmas_[pos].idx_by_hz,
+      printf("--%d, idx:%06d, score:%.5f\n", pos, top_lmas_[pos].idx_by_hz,
              top_lmas_[pos].freq);
     }
   }
@@ -496,7 +496,7 @@ size_t DictBuilder::read_raw_dict(const char* fn_raw,
   delete [] valid_hzs;
   utf16_reader.close();
 
-  printf("read successfully, lemma num: %zd\n", lemma_num);
+  printf("read succesfully, lemma num: %d\n", lemma_num);
 
   return lemma_num;
 }
@@ -624,9 +624,9 @@ bool DictBuilder::build_dict(const char *fn_raw,
   }
 
   if (kPrintDebug0) {
-    printf("homo_idx_num_eq1_: %zd\n", homo_idx_num_eq1_);
-    printf("homo_idx_num_gt1_: %zd\n", homo_idx_num_gt1_);
-    printf("top_lmas_num_: %zd\n", top_lmas_num_);
+    printf("homo_idx_num_eq1_: %d\n", homo_idx_num_eq1_);
+    printf("homo_idx_num_gt1_: %d\n", homo_idx_num_gt1_);
+    printf("top_lmas_num_: %d\n", top_lmas_num_);
   }
 
   free_resource();
@@ -1021,48 +1021,48 @@ void DictBuilder::stat_print() {
   printf("[root is layer -1]\n");
   printf(".. max_sonbuf_len per layer(from layer 0):\n   ");
   for (size_t i = 0; i < kMaxLemmaSize; i++)
-    printf("%zd, ", max_sonbuf_len_[i]);
+    printf("%d, ", max_sonbuf_len_[i]);
   printf("-, \n");
 
   printf(".. max_homobuf_len per layer:\n   -, ");
   for (size_t i = 0; i < kMaxLemmaSize; i++)
-    printf("%zd, ", max_homobuf_len_[i]);
+    printf("%d, ", max_homobuf_len_[i]);
   printf("\n");
 
   printf(".. total_son_num per layer:\n   ");
   for (size_t i = 0; i < kMaxLemmaSize; i++)
-    printf("%zd, ", total_son_num_[i]);
+    printf("%d, ", total_son_num_[i]);
   printf("-, \n");
 
   printf(".. total_node_hasson per layer:\n   1, ");
   for (size_t i = 0; i < kMaxLemmaSize; i++)
-    printf("%zd, ", total_node_hasson_[i]);
+    printf("%d, ", total_node_hasson_[i]);
   printf("\n");
 
   printf(".. total_sonbuf_num per layer:\n   ");
   for (size_t i = 0; i < kMaxLemmaSize; i++)
-    printf("%zd, ", total_sonbuf_num_[i]);
+    printf("%d, ", total_sonbuf_num_[i]);
   printf("-, \n");
 
   printf(".. total_sonbuf_allnoson per layer:\n   ");
   for (size_t i = 0; i < kMaxLemmaSize; i++)
-    printf("%zd, ", total_sonbuf_allnoson_[i]);
+    printf("%d, ", total_sonbuf_allnoson_[i]);
   printf("-, \n");
 
   printf(".. total_node_in_sonbuf_allnoson per layer:\n   ");
   for (size_t i = 0; i < kMaxLemmaSize; i++)
-    printf("%zd, ", total_node_in_sonbuf_allnoson_[i]);
+    printf("%d, ", total_node_in_sonbuf_allnoson_[i]);
   printf("-, \n");
 
   printf(".. total_homo_num per layer:\n   0, ");
   for (size_t i = 0; i < kMaxLemmaSize; i++)
-    printf("%zd, ", total_homo_num_[i]);
+    printf("%d, ", total_homo_num_[i]);
   printf("\n");
 
-  printf(".. son buf allocation number with only 1 son: %zd\n", sonbufs_num1_);
-  printf(".. son buf allocation number with more than 1 son: %zd\n",
+  printf(".. son buf allocation number with only 1 son: %d\n", sonbufs_num1_);
+  printf(".. son buf allocation number with more than 1 son: %d\n",
          sonbufs_numgt1_);
-  printf(".. total lemma node number: %zd\n", total_lma_node_num_ + 1);
+  printf(".. total lemma node number: %d\n", total_lma_node_num_ + 1);
 }
 #endif  // ___DO_STATISTICS___
 

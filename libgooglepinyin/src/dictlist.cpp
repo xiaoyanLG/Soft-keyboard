@@ -384,14 +384,14 @@ bool DictList::save_list(FILE *fp) {
       NULL == scis_hz_ || NULL == scis_splid_ || 0 == scis_num_)
     return false;
 
-  if (fwrite(&scis_num_, sizeof(size_t), 1, fp) != 1)
+  if (fwrite(&scis_num_, sizeof(uint32), 1, fp) != 1)
     return false;
 
-  if (fwrite(start_pos_, sizeof(size_t), kMaxLemmaSize + 1, fp) !=
+  if (fwrite(start_pos_, sizeof(uint32), kMaxLemmaSize + 1, fp) !=
       kMaxLemmaSize + 1)
     return false;
 
-  if (fwrite(start_id_, sizeof(size_t), kMaxLemmaSize + 1, fp) !=
+  if (fwrite(start_id_, sizeof(uint32), kMaxLemmaSize + 1, fp) !=
       kMaxLemmaSize + 1)
     return false;
 
@@ -414,14 +414,14 @@ bool DictList::load_list(FILE *fp) {
 
   initialized_ = false;
 
-  if (fread(&scis_num_, sizeof(size_t), 1, fp) != 1)
+  if (fread(&scis_num_, sizeof(uint32), 1, fp) != 1)
     return false;
 
-  if (fread(start_pos_, sizeof(size_t), kMaxLemmaSize + 1, fp) !=
+  if (fread(start_pos_, sizeof(uint32), kMaxLemmaSize + 1, fp) !=
       kMaxLemmaSize + 1)
     return false;
 
-  if (fread(start_id_, sizeof(size_t), kMaxLemmaSize + 1, fp) !=
+  if (fread(start_id_, sizeof(uint32), kMaxLemmaSize + 1, fp) !=
       kMaxLemmaSize + 1)
     return false;
 

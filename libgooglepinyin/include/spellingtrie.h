@@ -30,8 +30,8 @@ struct SpellingNode {
   SpellingNode *first_son;
   // The spelling id for each node. If you need more bits to store
   // spelling id, please adjust this structure.
-  uint32 spelling_idx:27;
-  uint32 num_of_son:5;
+  uint16 spelling_idx:11;
+  uint16  num_of_son:5;
   char char_this_node;
   unsigned char score;
 };
@@ -63,10 +63,10 @@ class SpellingTrie {
   // so spelling_size_ is 8.
   // Structure: The string ended with '\0' + score char.
   // An item with a lower score has a higher probability.
-  size_t spelling_size_;
+  uint32 spelling_size_;
 
   // Number of full spelling ids.
-  size_t spelling_num_;
+  uint32 spelling_num_;
 
   float score_amplifier_;
   unsigned char average_score_;

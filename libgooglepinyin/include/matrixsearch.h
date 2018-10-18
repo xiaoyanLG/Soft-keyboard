@@ -380,6 +380,10 @@ class MatrixSearch {
   bool init_fd(int sys_fd, long start_offset, long length,
                const char *fn_usr_dict);
 
+  void init_user_dictionary(const char *fn_usr_dict);
+
+  bool is_user_dictionary_enabled() const;
+
   void set_max_lens(size_t max_sps_len, size_t max_hzs_len);
 
   void close();

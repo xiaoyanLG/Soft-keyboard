@@ -202,6 +202,18 @@ extern "C" {
    * Enable Yunmus in ShouZiMu mode.
    */
   void im_enable_ym_as_szm(bool enable);
+
+  /**
+   * Initializes or uninitializes the user dictionary.
+   *
+   * @param fn_usr_dict The file name of the user dictionary.
+   */
+  void im_init_user_dictionary(const char *fn_usr_dict);
+
+  /**
+   * Returns the current status of user dictinary.
+   */
+  bool im_is_user_dictionary_enabled(void);
 }
 
 #ifdef __cplusplus

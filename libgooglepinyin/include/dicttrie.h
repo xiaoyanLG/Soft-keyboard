@@ -73,15 +73,15 @@ class DictTrie : AtomDictBase {
   // root_[splid_le0_index_[splid - kFullSplIdStart]]
   uint16 *splid_le0_index_;
 
-  size_t lma_node_num_le0_;
-  size_t lma_node_num_ge1_;
+  uint32 lma_node_num_le0_;
+  uint32 lma_node_num_ge1_;
 
   // The first part is for homophnies, and the last  top_lma_num_ items are
   // lemmas with highest scores.
   unsigned char *lma_idx_buf_;
-  size_t lma_idx_buf_len_;  // The total size of lma_idx_buf_ in byte.
-  size_t total_lma_num_;    // Total number of lemmas in this dictionary.
-  size_t top_lmas_num_;     // Number of lemma with highest scores.
+  uint32 lma_idx_buf_len_;  // The total size of lma_idx_buf_ in byte.
+  uint32 total_lma_num_;    // Total number of lemmas in this dictionary.
+  uint32 top_lmas_num_;     // Number of lemma with highest scores.
 
   // Parsing mark list used to mark the detailed extended statuses.
   ParsingMark *parsing_marks_;
@@ -200,21 +200,21 @@ class DictTrie : AtomDictBase {
                  NPredictItem *npre_items, size_t npre_max,
                  size_t b4_used);
 
-  LemmaIdType put_lemma(char16 lemma_str[], uint16 splids[],
-                        uint16 lemma_len, uint16 count) {return 0;}
+  LemmaIdType put_lemma(char16 /*lemma_str*/[], uint16 /*splids*/[],
+                        uint16 /*lemma_len*/, uint16 /*count*/) {return 0;}
 
-  LemmaIdType update_lemma(LemmaIdType lemma_id, int16 delta_count,
-                           bool selected) {return 0;}
+  LemmaIdType update_lemma(LemmaIdType /*lemma_id*/, int16 /*delta_count*/,
+                           bool /*selected*/) {return 0;}
 
-  LemmaIdType get_lemma_id(char16 lemma_str[], uint16 splids[],
-                           uint16 lemma_len) {return 0;}
+  LemmaIdType get_lemma_id(char16 /*lemma_str*/[], uint16 /*splids*/[],
+                           uint16 /*lemma_len*/) {return 0;}
 
-  LmaScoreType get_lemma_score(LemmaIdType lemma_id) {return 0;}
+  LmaScoreType get_lemma_score(LemmaIdType /*lemma_id*/) {return 0;}
 
-  LmaScoreType get_lemma_score(char16 lemma_str[], uint16 splids[],
-                        uint16 lemma_len) {return 0;}
+  LmaScoreType get_lemma_score(char16 /*lemma_str*/[], uint16 /*splids*/[],
+                        uint16 /*lemma_len*/) {return 0;}
 
-  bool remove_lemma(LemmaIdType lemma_id) {return false;}
+  bool remove_lemma(LemmaIdType /*lemma_id*/) {return false;}
 
   size_t get_total_lemma_count() {return 0;}
   void set_total_lemma_count_of_others(size_t count);

@@ -61,9 +61,9 @@ void DictTrie::free_resource(bool free_dict_list) {
     free(nodes_ge1_);
   nodes_ge1_ = NULL;
 
-  if (NULL != nodes_ge1_)
-    free(nodes_ge1_);
-  nodes_ge1_ = NULL;
+  if (NULL != lma_idx_buf_)
+    free(lma_idx_buf_);
+  lma_idx_buf_ = NULL;
 
   if (free_dict_list) {
     if (NULL != dict_list_) {
@@ -113,16 +113,16 @@ bool DictTrie::save_dict(FILE *fp) {
   if (NULL == fp)
     return false;
 
-  if (fwrite(&lma_node_num_le0_, sizeof(size_t), 1, fp) != 1)
+  if (fwrite(&lma_node_num_le0_, sizeof(uint32), 1, fp) != 1)
     return false;
 
-  if (fwrite(&lma_node_num_ge1_, sizeof(size_t), 1, fp) != 1)
+  if (fwrite(&lma_node_num_ge1_, sizeof(uint32), 1, fp) != 1)
     return false;
 
-  if (fwrite(&lma_idx_buf_len_, sizeof(size_t), 1, fp) != 1)
+  if (fwrite(&lma_idx_buf_len_, sizeof(uint32), 1, fp) != 1)
     return false;
 
-  if (fwrite(&top_lmas_num_, sizeof(size_t), 1, fp) != 1)
+  if (fwrite(&top_lmas_num_, sizeof(uint32), 1, fp) != 1)
     return false;
 
   if (fwrite(root_, sizeof(LmaNodeLE0), lma_node_num_le0_, fp)
@@ -168,19 +168,18 @@ bool DictTrie::save_dict(const char *filename) {
 bool DictTrie::load_dict(FILE *fp) {
   if (NULL == fp)
     return false;
-
-  if (fread(&lma_node_num_le0_, sizeof(size_t), 1, fp) != 1)
+  if (fread(&lma_node_num_le0_, sizeof(uint32), 1, fp) != 1)
     return false;
 
-  if (fread(&lma_node_num_ge1_, sizeof(size_t), 1, fp) != 1)
+  if (fread(&lma_node_num_ge1_, sizeof(uint32), 1, fp) != 1)
     return false;
 
-  if (fread(&lma_idx_buf_len_, sizeof(size_t), 1, fp) != 1)
+  if (fread(&lma_idx_buf_len_, sizeof(uint32), 1, fp) != 1)
     return false;
 
-  if (fread(&top_lmas_num_, sizeof(size_t), 1, fp) != 1 ||
-      top_lmas_num_ >= lma_idx_buf_len_)
-    return false;
+  if (fread(&top_lmas_num_, sizeof(uint32), 1, fp) != 1 ||
+     top_lmas_num_ >= lma_idx_buf_len_)
+     return false;
 
   free_resource(false);
 
@@ -831,7 +830,7 @@ size_t DictTrie::get_lpis(const uint16* splid_str, uint16 splid_str_len,
         lma_buf[ch_pos].psb =
             static_cast<LmaScoreType>(ngram.get_uni_psb(lma_buf[ch_pos].id));
 
-        if (ch_pos >= max_lma_buf - 1)
+        if (lma_num + homo_pos >= max_lma_buf - 1)
           break;
       }
     }

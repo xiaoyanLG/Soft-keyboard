@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2009 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,44 +23,36 @@
 #ifdef ___DEBUG_PERF___
 #include <cutils/log.h>
 #endif
-#ifdef WIN32
-#include <windows.h>
-#include <time.h>
+#ifdef _WIN32
+#include <io.h>
 #else
 #include <unistd.h>
-#include <sys/time.h>
-#include <pthread.h>
 #endif
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <assert.h>
 #include <ctype.h>
 #include <sys/types.h>
-#include <time.h>
+#ifdef _WIN32
+#undef max
+#undef min
+#include <QDateTime>
+#include <QMutex>
+#else
+#include <pthread.h>
+#endif
 #include <math.h>
 
-#ifdef WIN32
-int gettimeofday(struct timeval *tp, void *tzp)
-{
-  time_t clock;
-  struct tm tm;
-  SYSTEMTIME wtm;
-  GetLocalTime(&wtm);
-  tm.tm_year   = wtm.wYear - 1900;
-  tm.tm_mon   = wtm.wMonth - 1;
-  tm.tm_mday   = wtm.wDay;
-  tm.tm_hour   = wtm.wHour;
-  tm.tm_min   = wtm.wMinute;
-  tm.tm_sec   = wtm.wSecond;
-  tm. tm_isdst  = -1;
-  clock = mktime(&tm);
-  tp->tv_sec = clock;
-  tp->tv_usec = wtm.wMilliseconds * 1000;
-  return (0);
+namespace ime_pinyin {
+
+#ifdef _WIN32
+static int gettimeofday(struct timeval *tp, void *) {
+    const qint64 current_msecs_since_epoch = QDateTime::currentMSecsSinceEpoch();
+    tp->tv_sec = (long)(current_msecs_since_epoch / 1000);
+    tp->tv_usec = (long)((current_msecs_since_epoch % 1000) * 1000);
+    return 0;
 }
 #endif
-
-namespace ime_pinyin {
 
 #ifdef ___DEBUG_PERF___
 static uint64 _ellapse_ = 0;
@@ -68,15 +60,15 @@ static struct timeval _tv_start_, _tv_end_;
 #define DEBUG_PERF_BEGIN \
     do { \
       gettimeofday(&_tv_start_, NULL); \
-    } while(0)
+    } while (0)
 #define DEBUG_PERF_END \
     do { \
       gettimeofday(&_tv_end_, NULL); \
       _ellapse_ = (_tv_end_.tv_sec - _tv_start_.tv_sec) * 1000000 + \
                   (_tv_end_.tv_usec - _tv_start_.tv_usec); \
-    } while(0)
+    } while (0)
 #define LOGD_PERF(message) \
-    LOGD("PERFORMANCE[%s] %llu usec.", message, _ellapse_);
+    ALOGD("PERFORMANCE[%s] %llu usec.", message, _ellapse_);
 #else
 #define DEBUG_PERF_BEGIN
 #define DEBUG_PERF_END
@@ -84,11 +76,11 @@ static struct timeval _tv_start_, _tv_end_;
 #endif
 
 // XXX File load and write are thread-safe by g_mutex_
-#ifdef WIN32
-static HANDLE g_mutex_ = CreateMutex(0, 0, 0);
-#define pthread_mutex_unlock(a) WaitForSingleObject(g_mutex_, 3000)
-#define pthread_mutex_trylock(a) WaitForSingleObject(g_mutex_, 3000)
-#define pthread_mutex_lock(a) ReleaseMutex(g_mutex_)
+#ifdef _WIN32
+static QMutex g_mutex_;
+#define pthread_mutex_lock(MUTEX) ((MUTEX)->lock())
+#define pthread_mutex_unlock(MUTEX) ((MUTEX)->unlock())
+#define pthread_mutex_trylock(MUTEX) (!(MUTEX)->tryLock(0))
 #else
 static pthread_mutex_t g_mutex_ = PTHREAD_MUTEX_INITIALIZER;
 #endif
@@ -313,6 +305,7 @@ bool UserDict::load_dict(const char *file_name, LemmaIdType start_id,
   return true;
  error:
   free((void*)dict_file_);
+  dict_file_ = NULL;
   start_id_ = 0;
   return false;
 }
@@ -1025,6 +1018,8 @@ bool UserDict::remove_lemma(LemmaIdType lemma_id) {
 
 void UserDict::flush_cache() {
   LemmaIdType start_id = start_id_;
+  if (!dict_file_)
+    return;
   const char * file = strdup(dict_file_);
   if (!file)
     return;
@@ -1273,8 +1268,8 @@ void UserDict::write_back() {
   // XXX write back is only allowed from close_dict due to thread-safe sake
   if (state_ == USER_DICT_NONE || state_ == USER_DICT_SYNC)
     return;
-  QFile fd(dict_file_);
-  if (!fd.open(QIODevice::ReadOnly))
+  int fd = open(dict_file_, O_WRONLY);
+  if (fd == -1)
     return;
   switch (state_) {
     case USER_DICT_DEFRAGMENTED:
@@ -1299,98 +1294,100 @@ void UserDict::write_back() {
   }
   // It seems truncate is not need on Linux, Windows except Mac
   // I am doing it here anyway for safety.
-
-  fd.resize(fd.pos());
-  fd.close();
+  off_t cur = lseek(fd, 0, SEEK_CUR);
+#ifndef _WIN32
+  ftruncate(fd, cur);
+#endif
+  close(fd);
   state_ = USER_DICT_SYNC;
 }
 
 #ifdef ___SYNC_ENABLED___
-void UserDict::write_back_sync(QFile &fd) {
-  int err = fd.seek(4 + dict_info_.lemma_size
+void UserDict::write_back_sync(int fd) {
+  int err = lseek(fd, 4 + dict_info_.lemma_size
                   + (dict_info_.lemma_count << 3)
 #ifdef ___PREDICT_ENABLED___
                   + (dict_info_.lemma_count << 2)
 #endif
-                    );
+                  , SEEK_SET);
   if (err == -1)
     return;
-  fd.write((char *)syncs_, dict_info_.sync_count << 2);
-  fd.write((char *)&dict_info_, sizeof(dict_info_));
+  write(fd, syncs_, dict_info_.sync_count << 2);
+  write(fd, &dict_info_, sizeof(dict_info_));
 }
 #endif
 
-void UserDict::write_back_offset(QFile &fd) {
-  int err = fd.seek(4 + dict_info_.lemma_size);
+void UserDict::write_back_offset(int fd) {
+  int err = lseek(fd, 4 + dict_info_.lemma_size, SEEK_SET);
   if (err == -1)
     return;
-  fd.write((char *)offsets_, dict_info_.lemma_count << 2);
+  write(fd, offsets_, dict_info_.lemma_count << 2);
 #ifdef ___PREDICT_ENABLED___
-  fd.write((char *)predicts_, dict_info_.lemma_count << 2);
+  write(fd, predicts_, dict_info_.lemma_count << 2);
 #endif
-  fd.write((char *)scores_, dict_info_.lemma_count << 2);
+  write(fd, scores_, dict_info_.lemma_count << 2);
 #ifdef ___SYNC_ENABLED___
-  fd.write((char *)syncs_, dict_info_.sync_count << 2);
+  write(fd, syncs_, dict_info_.sync_count << 2);
 #endif
-  fd.write((char *)&dict_info_, sizeof(dict_info_));
+  write(fd, &dict_info_, sizeof(dict_info_));
 }
 
-void UserDict::write_back_score(QFile &fd) {
-  int err = fd.seek(4 + dict_info_.lemma_size
+void UserDict::write_back_score(int fd) {
+  int err = lseek(fd, 4 + dict_info_.lemma_size
                   + (dict_info_.lemma_count << 2)
 #ifdef ___PREDICT_ENABLED___
                   + (dict_info_.lemma_count << 2)
 #endif
-                  );
+                  , SEEK_SET);
   if (err == -1)
     return;
-  fd.write((char *)scores_, dict_info_.lemma_count << 2);
+  write(fd, scores_, dict_info_.lemma_count << 2);
 #ifdef ___SYNC_ENABLED___
-  fd.write((char *)syncs_, dict_info_.sync_count << 2);
+  write(fd, syncs_, dict_info_.sync_count << 2);
 #endif
-  fd.write((char *)&dict_info_, sizeof(dict_info_));
+  write(fd, &dict_info_, sizeof(dict_info_));
 }
 
-void UserDict::write_back_lemma(QFile &fd) {
-  int err = fd.seek(4);
+void UserDict::write_back_lemma(int fd) {
+  int err = lseek(fd, 4, SEEK_SET);
   if (err == -1)
     return;
   // New lemmas are always appended, no need to write whole lemma block
   size_t need_write = kUserDictPreAlloc *
       (2 + (kUserDictAverageNchar << 2)) - lemma_size_left_;
-  err = fd.seek(dict_info_.lemma_size - need_write + fd.pos());
+  err = lseek(fd, dict_info_.lemma_size - need_write, SEEK_CUR);
   if (err == -1)
     return;
-  fd.write((char *)lemmas_ + dict_info_.lemma_size - need_write, need_write);
+  write(fd, lemmas_ + dict_info_.lemma_size - need_write, need_write);
 
-  fd.write((char *)offsets_,  dict_info_.lemma_count << 2);
+  write(fd, offsets_,  dict_info_.lemma_count << 2);
 #ifdef ___PREDICT_ENABLED___
-  fd.write((char *)predicts_,  dict_info_.lemma_count << 2);
+  write(fd, predicts_,  dict_info_.lemma_count << 2);
 #endif
-  fd.write((char *)scores_, dict_info_.lemma_count << 2);
+  write(fd, scores_, dict_info_.lemma_count << 2);
 #ifdef ___SYNC_ENABLED___
-  fd.write((char *)syncs_, dict_info_.sync_count << 2);
+  write(fd, syncs_, dict_info_.sync_count << 2);
 #endif
-  fd.write((char *)&dict_info_, sizeof(dict_info_));
+  write(fd, &dict_info_, sizeof(dict_info_));
 }
 
-void UserDict::write_back_all(QFile &fd) {
+void UserDict::write_back_all(int fd) {
   // XXX lemma_size is handled differently in writeall
   // and writelemma. I update lemma_size and lemma_count in different
   // places for these two cases. Should fix it to make it consistent.
-  int err = fd.seek(4);
+  int err = lseek(fd, 4, SEEK_SET);
   if (err == -1)
     return;
-  fd.write((char *)lemmas_, dict_info_.lemma_size);
-  fd.write((char *)offsets_, dict_info_.lemma_count << 2);
+  write(fd, lemmas_, dict_info_.lemma_size);
+  write(fd, offsets_, dict_info_.lemma_count << 2);
 #ifdef ___PREDICT_ENABLED___
-  fd.write((char *)predicts_, dict_info_.lemma_count << 2);
+  write(fd, predicts_, dict_info_.lemma_count << 2);
 #endif
-  fd.write((char *)scores_, dict_info_.lemma_count << 2);
+  write(fd, scores_, dict_info_.lemma_count << 2);
 #ifdef ___SYNC_ENABLED___
-  fd.write((char *)syncs_, dict_info_.sync_count << 2);
+  write(fd, syncs_, dict_info_.sync_count << 2);
 #endif
-  fd.write((char *)&dict_info_, sizeof(dict_info_));
+  write(fd, &dict_info_, sizeof(dict_info_));
 }
 
 #ifdef ___CACHE_ENABLED___
@@ -1958,11 +1955,11 @@ bool UserDict::state(UserDictStat * stat) {
     return false;
   stat->version = version_;
   stat->file_name = dict_file_;
-//  stat->load_time.tv_sec = load_time_.tv_sec;
-//  stat->load_time.tv_usec = load_time_.tv_usec;
+  stat->load_time.tv_sec = load_time_.tv_sec;
+  stat->load_time.tv_usec = load_time_.tv_usec;
   pthread_mutex_lock(&g_mutex_);
-//  stat->last_update.tv_sec = g_last_update_.tv_sec;
-//  stat->last_update.tv_usec = g_last_update_.tv_usec;
+  stat->last_update.tv_sec = g_last_update_.tv_sec;
+  stat->last_update.tv_usec = g_last_update_.tv_usec;
   pthread_mutex_unlock(&g_mutex_);
   stat->disk_size = get_dict_file_size(&dict_info_);
   stat->lemma_count = dict_info_.lemma_count;

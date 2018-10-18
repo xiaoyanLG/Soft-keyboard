@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2009 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +44,7 @@ int compare_raw_spl_eb(const void* p1, const void* p2) {
 size_t get_odd_next(size_t value) {
   size_t v_next = value;
   while (true) {
-    size_t v_next_sqrt = (size_t)sqrt((long double)v_next);
+    size_t v_next_sqrt = (size_t)sqrt(v_next);
 
     bool is_odd = true;
     for (size_t v_dv = 2; v_dv < v_next_sqrt + 1; v_dv++) {
@@ -282,7 +282,7 @@ const char* SpellingTable::arrange(size_t *item_size, size_t *spl_num) {
           static_cast<char>((unsigned char)score);
 
       if (kPrintDebug0) {
-        printf("---pos:%zd, %s, psb:%d\n", pos, this_spl_buf,
+        printf("---pos:%d, %s, psb:%d\n", pos, this_spl_buf,
                (unsigned char)this_spl_buf[spelling_size_ -1]);
       }
     }

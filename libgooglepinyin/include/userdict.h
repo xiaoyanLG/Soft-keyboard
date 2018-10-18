@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2009 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,15 +24,15 @@
 // Debug performance for operations
 // #define ___DEBUG_PERF___
 
-#ifdef WIN32
-#include <winsock.h>
+#ifdef _WIN32
+#include <time.h>
+#include <winsock.h> // timeval
 #else
-#include <sys/time.h>
 #include <pthread.h>
+#include <sys/time.h>
 #endif
 #include "atomdictbase.h"
 
-#include <QFile>
 namespace ime_pinyin {
 
 class UserDict : public AtomDictBase {
@@ -113,7 +113,7 @@ class UserDict : public AtomDictBase {
 
   /**
    * Get lemmas need sync to a UTF-16LE string of above format.
-   * Note: input buffer (str) must not be too small. If str is too small to 
+   * Note: input buffer (str) must not be too small. If str is too small to
    *       contain single one lemma, there might be a dead loop.
    *
    * @param str buffer to write lemmas
@@ -129,8 +129,8 @@ class UserDict : public AtomDictBase {
   struct UserDictStat {
     uint32 version;
     const char * file_name;
-//    struct timeval load_time;
-//    struct timeval last_update;
+    struct timeval load_time;
+    struct timeval last_update;
     uint32 disk_size;
     uint32 lemma_count;
     uint32 lemma_size;
@@ -384,12 +384,12 @@ class UserDict : public AtomDictBase {
 
   void remove_lemma_from_sync_list(uint32 offset);
 
-  void write_back_sync(QFile &fd);
+  void write_back_sync(int fd);
 #endif
-  void write_back_score(QFile &fd);
-  void write_back_offset(QFile &fd);
-  void write_back_lemma(QFile &fd);
-  void write_back_all(QFile &fd);
+  void write_back_score(int fd);
+  void write_back_offset(int fd);
+  void write_back_lemma(int fd);
+  void write_back_all(int fd);
   void write_back();
 
   struct UserDictScoreOffsetPair {

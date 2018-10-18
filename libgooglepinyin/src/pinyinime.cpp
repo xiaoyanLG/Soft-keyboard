@@ -181,6 +181,17 @@ extern "C" {
     spl_trie.szm_enable_ym(enable);
   }
 
+  void im_init_user_dictionary(const char *fn_usr_dict) {
+    if (!matrix_search)
+        return;
+    matrix_search->flush_cache();
+    matrix_search->init_user_dictionary(fn_usr_dict);
+  }
+
+  bool im_is_user_dictionary_enabled(void) {
+    return NULL != matrix_search ? matrix_search->is_user_dictionary_enabled() : false;
+  }
+
 #ifdef __cplusplus
 }
 #endif

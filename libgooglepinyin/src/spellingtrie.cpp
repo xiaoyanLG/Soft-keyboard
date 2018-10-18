@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2009 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,15 +19,15 @@
 #include <assert.h>
 #include "../include/dictdef.h"
 
+#ifdef _WIN32
+#define snprintf _snprintf
+#endif
+
 #ifdef ___BUILD_MODEL___
 #include "../include/spellingtable.h"
 #endif
 
 #include "../include/spellingtrie.h"
-
-#ifdef WIN32
-#define snprintf _snprintf
-#endif
 
 namespace ime_pinyin {
 
@@ -347,7 +347,7 @@ bool SpellingTrie::construct(const char* spelling_arr, size_t item_size,
 
 #ifdef ___BUILD_MODEL___
   if (kPrintDebug0) {
-    printf("---SpellingTrie Nodes: %zd\n", node_num_);
+    printf("---SpellingTrie Nodes: %d\n", (int)node_num_);
   }
   return build_ym_info();
 #else
@@ -439,8 +439,8 @@ SpellingNode* SpellingTrie::construct_spellings_subset(
 
   const char *spelling_last_start = spelling_buf_ + spelling_size_ * item_start;
   char char_for_node = spelling_last_start[level];
-  assert( (char_for_node >= 'A' && char_for_node <= 'Z') ||
-          'h' == char_for_node);
+  assert((char_for_node >= 'A' && char_for_node <= 'Z') ||
+         'h' == char_for_node);
 
   // Scan the array to find how many sons
   for (size_t i = item_start + 1; i < item_end; i++) {
@@ -644,10 +644,10 @@ bool SpellingTrie::save_spl_trie(FILE *fp) {
   if (NULL == fp || NULL == spelling_buf_)
     return false;
 
-  if (fwrite(&spelling_size_, sizeof(size_t), 1, fp) != 1)
+  if (fwrite(&spelling_size_, sizeof(uint32), 1, fp) != 1)
     return false;
 
-  if (fwrite(&spelling_num_, sizeof(size_t), 1, fp) != 1)
+  if (fwrite(&spelling_num_, sizeof(uint32), 1, fp) != 1)
     return false;
 
   if (fwrite(&score_amplifier_, sizeof(float), 1, fp) != 1)
@@ -667,10 +667,10 @@ bool SpellingTrie::load_spl_trie(FILE *fp) {
   if (NULL == fp)
     return false;
 
-  if (fread(&spelling_size_, sizeof(size_t), 1, fp) != 1)
+  if (fread(&spelling_size_, sizeof(uint32), 1, fp) != 1)
     return false;
 
-  if (fread(&spelling_num_, sizeof(size_t), 1, fp) != 1)
+  if (fread(&spelling_num_, sizeof(uint32), 1, fp) != 1)
     return false;
 
   if (fread(&score_amplifier_, sizeof(float), 1, fp) != 1)
