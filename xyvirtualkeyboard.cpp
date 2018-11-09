@@ -46,7 +46,7 @@ void XYVirtualKeyboard::initPinyinDictionary()
     if (!ret)
     {
         ret = XYInputSearchInterface::getInstance()->initInputBase(qApp->applicationDirPath()
-                                     + "/../../Soft-keyboard/chineseInput/chineseBase/chinese.db");
+                                                                   + "/../../Soft-keyboard/chineseInput/chineseBase/chinese.db");
     }
 #else
     googlePinyin = new pinyin_im;
@@ -385,17 +385,33 @@ void XYVirtualKeyboard::paintEvent(QPaintEvent *event)
     }
 
     painter.drawRect(rect().x(),
-                            rect().y() + letterLabel->height() + 8,
-                            rect().width(),
-                            rect().height() - letterLabel->height() - 8);
+                     rect().y() + letterLabel->height() + 8,
+                     rect().width(),
+                     rect().height() - letterLabel->height() - 8);
 }
 
 void XYVirtualKeyboard::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && triangleBtnRect.contains(event->pos()))
+    QRect topStretchRect = QRect(0, 0, width(), 3);
+    QRect bottomStretchRect = QRect(0, height() - 3, width(), 3);
+    if (event->button() == Qt::LeftButton)
     {
-        triangleBtnPressed = true;
-        update();
+        if (triangleBtnRect.contains(event->pos()))
+        {
+            triangleBtnPressed = true;
+            update(triangleBtnRect);
+        }
+        else if (topStretchRect.contains(event->pos()))
+        {
+            resizeType = Top;
+            setCursor(Qt::SplitVCursor);
+        }
+        else if (bottomStretchRect.contains(event->pos()))
+        {
+            resizeType = Bottom;
+            setCursor(Qt::SplitVCursor);
+        }
+        lastResizePos = event->globalPos();
     }
 }
 
@@ -409,9 +425,19 @@ void XYVirtualKeyboard::mouseReleaseEvent(QMouseEvent *event)
             {
                 emit triangleBtnClicked();
             }
-            update();
+            update(triangleBtnRect);
         }
+        resizeType = No;
         triangleBtnPressed = false;
+        setCursor(Qt::ArrowCursor);
+    }
+}
+
+void XYVirtualKeyboard::mouseMoveEvent(QMouseEvent *event)
+{
+    if (resizeType != No)
+    {
+        resizeRequest(event);
     }
 }
 
@@ -472,12 +498,39 @@ bool XYVirtualKeyboard::eventFilter(QObject *obj, QEvent *event)
     return QWidget::eventFilter(obj, event);
 }
 
+void XYVirtualKeyboard::resizeRequest(QMouseEvent *event)
+{
+    QPoint curPos = event->globalPos();
+
+    int y_offset = curPos.y() - lastResizePos.y();
+    switch (resizeType)
+    {
+    case Top:
+    {
+        QSize lastSize = size();
+        resize(lastSize + QSize(0, -y_offset));
+        if (size() != lastSize)
+        {
+            move(pos() + QPoint(0, y_offset));
+        }
+        break;
+    }
+    case Bottom:
+        resize(size() + QSize(0, y_offset));
+        break;
+    default:
+        break;
+    }
+
+    lastResizePos = curPos;
+}
+
 XYVirtualKeyboard::XYVirtualKeyboard(QWidget *parent)
-    : QWidget(parent), triangleBtnPressed(false)
+    : QWidget(parent), triangleBtnPressed(false), resizeType(No)
 {
     this->setWindowFlags(Qt::FramelessWindowHint
-                   | Qt::WindowStaysOnTopHint
-                   | Qt::Tool);
+                         | Qt::WindowStaysOnTopHint
+                         | Qt::Tool);
 #if QT_VERSION >= 0x050000
     this->setWindowFlags(this->windowFlags() | Qt::WindowDoesNotAcceptFocus);
 #endif
@@ -495,7 +548,7 @@ XYVirtualKeyboard::XYVirtualKeyboard(QWidget *parent)
     connect(translateHView, SIGNAL(clicked(QString,int)),
             this, SLOT(userSelectChinese(QString,int)));
     translateHDragableWidget = new XYDragableWidget(translateHView,
-                                                   XYDragableWidget::HORIZONTAL);
+                                                    XYDragableWidget::HORIZONTAL);
     translateHDragableWidget->setMinimumHeight(30);
     translateHDragableWidget->setMouseSensitivity(5);
 
@@ -546,7 +599,7 @@ XYVirtualKeyboard::XYVirtualKeyboard(QWidget *parent)
     connect(funcHView, SIGNAL(clicked(QString,int)),
             this, SLOT(funcClicked(QString,int)));
     funcDragableWidget = new XYDragableWidget(funcHView,
-                                                   XYDragableWidget::HORIZONTAL);
+                                              XYDragableWidget::HORIZONTAL);
     funcDragableWidget->setMinimumHeight(30);
     funcDragableWidget->setMouseSensitivity(5);
 
