@@ -13,7 +13,10 @@ XYKeyBoardFilter *XYKeyBoardFilter::getInstance()
 
 XYKeyBoardFilter::XYKeyBoardFilter()
 {
-
+    connect(XYVirtualKeyboard::getInstance(),
+            &XYVirtualKeyboard::signalKeyClicked,
+            this,
+            &XYKeyBoardFilter::postEvent);
 }
 
 bool XYKeyBoardFilter::filter(int unicode, int keycode, int modifiers, bool isPress, bool autoRepeat)

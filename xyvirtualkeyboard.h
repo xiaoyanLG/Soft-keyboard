@@ -15,11 +15,14 @@ class XYMovableLabel: public QLabel
 {
     Q_OBJECT
 public:
-    XYMovableLabel(QWidget *parent = NULL)
-        :QLabel(parent)
-    {
+    XYMovableLabel(QWidget *parent = NULL);
 
-    }
+public slots:
+    void setText(const QString &text);
+    void clear();
+
+signals:
+    void textChanged(const QString &text);
 
 protected:
     bool event(QEvent *event);
@@ -35,7 +38,7 @@ public:
 
 signals:
     void triangleBtnClicked();
-//    void keyClicked(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
+    void signalKeyClicked(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
 
 public slots:
     void keyClicked(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);

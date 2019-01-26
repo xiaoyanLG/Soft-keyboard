@@ -22,7 +22,6 @@
 #include "xygooglepinyin.h"
 
 // xyinput拼音接口
-#include "xykeyboardfilter.h"
 #include "chineseInput/xyinputsearchinterface.h"
 
 #define XYINPUT    // 如果不定义使用google引擎
@@ -111,9 +110,9 @@ void XYVirtualKeyboard::keyClicked(int unicode, int key, Qt::KeyboardModifiers m
                 }
             }
         }
+    } else {
+        emit signalKeyClicked(unicode, key, modifiers, press);
     }
-
-    XYKeyBoardFilter::getInstance()->postEvent(unicode, key, modifiers, press);
 }
 
 void XYVirtualKeyboard::showLetterWidget()
@@ -539,6 +538,7 @@ XYVirtualKeyboard::XYVirtualKeyboard(QWidget *parent)
     letterWidget = new QWidget;
     numberWidget = new QWidget;
     letterLabel = new XYMovableLabel;
+    connect(letterLabel, SIGNAL(textChanged(QString)), this, SIGNAL(send_preedit(QString)));
     letterLabel->setMinimumWidth(30);
     QFont font = letterLabel->font();
     font.setPixelSize(20);
@@ -1169,6 +1169,26 @@ void XYVirtualKeyboard::userSelectChinese(const QString &text, int index)
 #endif
 }
 
+
+XYMovableLabel::XYMovableLabel(QWidget *parent)
+    :QLabel(parent)
+{
+
+}
+
+void XYMovableLabel::setText(const QString &text)
+{
+    if (text != QLabel::text()) {
+        QLabel::setText(text);
+        emit textChanged(text);
+    }
+}
+
+void XYMovableLabel::clear()
+{
+    QLabel::clear();
+    emit textChanged("");
+}
 
 bool XYMovableLabel::event(QEvent *event)
 {

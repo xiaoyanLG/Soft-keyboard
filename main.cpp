@@ -4,17 +4,34 @@
 #include "xyskin.h"
 #include <QIcon>
 
-//#define TEST
+#define TEST
 #ifdef TEST
+#include <QDebug>
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QInputMethodEvent>
 
-static void sendInputText(const QString &text)
+static void sendPreeditText(const QString &text)
+{
+    QInputMethodEvent *event =
+            new QInputMethodEvent(text, QList<QInputMethodEvent::Attribute>());
+    qApp->postEvent(qApp->focusWidget(), event);
+}
+
+static void sendCommitText(const QString &text)
 {
     QInputMethodEvent *event = new QInputMethodEvent;
     event->setCommitString(text);
+    qApp->postEvent(qApp->focusWidget(), event);
+}
+
+static void sendKeyEvent(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press)
+{
+    QKeyEvent *event = new QKeyEvent(press ? QEvent::KeyPress : QEvent::KeyRelease,
+                                     key,
+                                     modifiers,
+                                     QChar(unicode));
     qApp->postEvent(qApp->focusWidget(), event);
 }
 
@@ -36,7 +53,12 @@ int main(int argc, char *argv[])
     layout->addWidget(new QTextEdit);
     layout->addWidget(new QLineEdit);
     widget.show();
-    QObject::connect(XYVirtualKeyboard::getInstance(), &XYVirtualKeyboard::send_commit, &sendInputText);
+    QObject::connect(XYVirtualKeyboard::getInstance(),
+                     &XYVirtualKeyboard::send_preedit, &sendPreeditText);
+    QObject::connect(XYVirtualKeyboard::getInstance(),
+                     &XYVirtualKeyboard::send_commit, &sendCommitText);
+    QObject::connect(XYVirtualKeyboard::getInstance(),
+                     &XYVirtualKeyboard::signalKeyClicked, &sendKeyEvent);
 #endif
 
     a.setQuitOnLastWindowClosed(true);

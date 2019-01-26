@@ -6,12 +6,13 @@
 
 class KeyboardFilter: public QObject
 {
-
+    Q_OBJECT
 };
 
 //class XYKeyBoardFilter : public QWSServer::KeyboardFilter
 class XYKeyBoardFilter : public KeyboardFilter
 {
+    Q_OBJECT
 public:
     static XYKeyBoardFilter *getInstance();
 
