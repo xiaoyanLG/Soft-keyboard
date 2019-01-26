@@ -81,7 +81,7 @@ private:
     XYMovableLabel            *letterLabel;        // 输入字母显示控件,同时提供对键盘的移动操作
     XYHDragableTranslateView  *translateHView;      // 查询翻译内容展示控件
     XYVDragableTranslateView  *translateVView;      // 查询翻译内容展示控件
-	XYVDragableTranslateView  *symbolView;          // 特殊符号展示控件
+    XYVDragableTranslateView  *symbolView;          // 特殊符号展示控件
     XYHDragableTranslateView  *funcHView;           // 功能拖拽
     ResizeType                 resizeType;          // 拉伸类型
     QPoint                     lastResizePos;       // 上次拉伸位置
