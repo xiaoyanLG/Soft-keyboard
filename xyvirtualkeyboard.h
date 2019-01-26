@@ -38,10 +38,10 @@ public:
 
 signals:
     void triangleBtnClicked();
-    void signalKeyClicked(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
+    void keyClicked(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
 
 public slots:
-    void keyClicked(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
+    void keyEventHandle(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
     void showLetterWidget();
     void showNumberWidget();
     void languageChanged();

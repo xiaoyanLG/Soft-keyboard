@@ -14,7 +14,7 @@ XYKeyBoardFilter *XYKeyBoardFilter::getInstance()
 XYKeyBoardFilter::XYKeyBoardFilter()
 {
     connect(XYVirtualKeyboard::getInstance(),
-            &XYVirtualKeyboard::signalKeyClicked,
+            &XYVirtualKeyboard::keyClicked,
             this,
             &XYKeyBoardFilter::postEvent);
 }
@@ -27,7 +27,7 @@ bool XYKeyBoardFilter::filter(int unicode, int keycode, int modifiers, bool isPr
     }
     else
     {
-        XYVirtualKeyboard::getInstance()->keyClicked(unicode, keycode, (Qt::KeyboardModifiers)modifiers, isPress);
+        XYVirtualKeyboard::getInstance()->keyEventHandle(unicode, keycode, (Qt::KeyboardModifiers)modifiers, isPress);
     }
     return true;
 }

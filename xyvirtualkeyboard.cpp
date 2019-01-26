@@ -69,7 +69,7 @@ void XYVirtualKeyboard::switchLanguage()
     clear_history();
 }
 
-void XYVirtualKeyboard::keyClicked(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press)
+void XYVirtualKeyboard::keyEventHandle(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press)
 {
     if (XYPushButton::chinese)
     {
@@ -111,7 +111,7 @@ void XYVirtualKeyboard::keyClicked(int unicode, int key, Qt::KeyboardModifiers m
             }
         }
     } else {
-        emit signalKeyClicked(unicode, key, modifiers, press);
+        emit keyClicked(unicode, key, modifiers, press);
     }
 }
 
@@ -877,7 +877,7 @@ XYVirtualKeyboard::XYVirtualKeyboard(QWidget *parent)
         connect(XYPushButton::allKeyBtns.at(i),
                 SIGNAL(clicked(int,int,Qt::KeyboardModifiers,bool)),
                 this,
-                SLOT(keyClicked(int,int,Qt::KeyboardModifiers,bool)));
+                SLOT(keyEventHandle(int,int,Qt::KeyboardModifiers,bool)));
 
         connect(XYPushButton::allKeyBtns.at(i),
                 SIGNAL(mousePressed(XYPushButton*)),

@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     QObject::connect(XYVirtualKeyboard::getInstance(),
                      &XYVirtualKeyboard::send_commit, &sendCommitText);
     QObject::connect(XYVirtualKeyboard::getInstance(),
-                     &XYVirtualKeyboard::signalKeyClicked, &sendKeyEvent);
+                     &XYVirtualKeyboard::keyClicked, &sendKeyEvent);
 #endif
 
     a.setQuitOnLastWindowClosed(true);
