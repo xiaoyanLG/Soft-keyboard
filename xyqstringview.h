@@ -31,7 +31,9 @@ protected:
 
     int          unitMinWidth;
     int          unitMinHeight;
+    bool         pressed;
     QRect        pressRect;
+
 };
 
 #endif // XYQSTRINGVIEW_H

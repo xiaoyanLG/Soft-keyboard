@@ -4,7 +4,7 @@
 //#include <QDebug>
 
 XYQStringView::XYQStringView(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), pressed(false)
 {
     unitMinWidth = -1;
     unitMinHeight = -1;
@@ -30,14 +30,11 @@ void XYQStringView::setUnitMinHeight(int value)
 
 bool XYQStringView::event(QEvent *event)
 {
-    static bool pressed = false;
-    static QPoint pressedPoint;
     if (event->type() == QEvent::MouseButtonPress)
     {
         pressed = true;
         pressRect = QRect();
         QMouseEvent *mouse_event = (QMouseEvent *)event;
-        pressedPoint = mouse_event->globalPos();
         int index  = findcontainsMouseRect(mouse_event->pos(), pressRect);
         if (index != -1)
         {
