@@ -1,5 +1,5 @@
-﻿#ifndef XYTRANSLATEVIEW_H
-#define XYTRANSLATEVIEW_H
+﻿#ifndef XYHDRAGABLETRANSLATEVIEW_H
+#define XYHDRAGABLETRANSLATEVIEW_H
 
 #include "xyqstringview.h"
 
@@ -15,4 +15,4 @@ protected:
     friend class XYVirtualKeyboard;
 };
 
-#endif // XYTRANSLATEVIEW_H
+#endif // XYHDRAGABLETRANSLATEVIEW_H

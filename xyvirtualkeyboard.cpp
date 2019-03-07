@@ -110,9 +110,9 @@ void XYVirtualKeyboard::keyEventHandle(int unicode, int key, Qt::KeyboardModifie
                 }
             }
         }
-    } else {
-        emit keyClicked(unicode, key, modifiers, press);
     }
+
+    emit keyClicked(unicode, key, modifiers, press);
 }
 
 void XYVirtualKeyboard::showLetterWidget()
@@ -937,6 +937,10 @@ bool XYVirtualKeyboard::backspace_clicked()
         {
             clear_history();
         }
+    }
+    else
+    {
+        return false;
     }
 #else
     if (letterLabel->text().isEmpty())
