@@ -20,6 +20,7 @@ protected:
 private:
     bool      filterObjsPressed;
     QPoint    filterObjsLastPressedPoint;
+    QPoint    filterObjscurPressedPoint;
 
 private:
     int        mouseSensitivity; // Õœ∂Ø¡È√Ù∂»
