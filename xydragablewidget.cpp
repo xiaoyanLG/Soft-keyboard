@@ -5,7 +5,7 @@
 #include <QDebug>
 
 XYDragableWidget::XYDragableWidget(QWidget *centerWidget, XYDragableWidget::DIRECTION dire, QWidget *parent)
-    : QWidget(parent), centerWidget(centerWidget), direction(dire), mouseSensitivity(1)
+    : QWidget(parent), centerWidget(centerWidget), direction(dire), mouseSensitivity(1), filterObjsPressed(false)
 {
     this->centerWidget = centerWidget;
     this->centerWidget->setParent(this);
@@ -30,20 +30,18 @@ void XYDragableWidget::resizeEvent(QResizeEvent *event)
 
 bool XYDragableWidget::eventFilter(QObject *obj, QEvent *event)
 {
-    static bool pressed = false;
-    static QPoint lastPos;
     if (centerWidget == obj)
     {
         if (event->type() == QEvent::MouseButtonPress)
         {
             QMouseEvent *mouse_event = (QMouseEvent *)event;
-            pressed = true;
-            lastPos = mouse_event->globalPos();
+            filterObjsPressed = true;
+            filterObjsLastPressedPoint = mouse_event->globalPos();
         }
         else if (event->type() == QEvent::MouseButtonRelease)
         {
-            pressed = false;
-            lastPos = QPoint();
+            filterObjsPressed = false;
+            filterObjsLastPressedPoint = QPoint();
         }
         else if (event->type() == QEvent::Wheel)
         {
@@ -83,19 +81,19 @@ bool XYDragableWidget::eventFilter(QObject *obj, QEvent *event)
                 }
             }
         }
-        else if (event->type() == QEvent::MouseMove && pressed)
+        else if (event->type() == QEvent::MouseMove && filterObjsPressed)
         {
             QMouseEvent *mouse_event = (QMouseEvent *)event;
             if (direction == HORIZONTAL)
             {
-                if (lastPos.x() > mouse_event->globalPos().x())
+                if (filterObjsLastPressedPoint.x() > mouse_event->globalPos().x())
                 {
                     if (centerWidget->pos().x() - 1 >= width() - centerWidget->width())
                     {
                         centerWidget->move(centerWidget->pos().x() - mouseSensitivity, centerWidget->pos().y());
                     }
                 }
-                else if (lastPos.x() < mouse_event->globalPos().x())
+                else if (filterObjsLastPressedPoint.x() < mouse_event->globalPos().x())
                 {
                     if (centerWidget->pos().x() + 1 <= 0)
                     {
@@ -105,14 +103,14 @@ bool XYDragableWidget::eventFilter(QObject *obj, QEvent *event)
             }
             else
             {
-                if (lastPos.y() > mouse_event->globalPos().y())
+                if (filterObjsLastPressedPoint.y() > mouse_event->globalPos().y())
                 {
                     if (centerWidget->pos().y() - 1 >= height() - centerWidget->height())
                     {
                         centerWidget->move(centerWidget->pos().x(), centerWidget->pos().y() - mouseSensitivity);
                     }
                 }
-                else if (lastPos.y() < mouse_event->globalPos().y())
+                else if (filterObjsLastPressedPoint.y() < mouse_event->globalPos().y())
                 {
                     if (centerWidget->pos().y() + 1 <= 0)
                     {
@@ -120,7 +118,7 @@ bool XYDragableWidget::eventFilter(QObject *obj, QEvent *event)
                     }
                 }
             }
-            lastPos = mouse_event->globalPos();
+            filterObjsLastPressedPoint = mouse_event->globalPos();
         }
     }
 

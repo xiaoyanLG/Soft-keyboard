@@ -13,13 +13,13 @@ public:
     int getMouseSensitivity() const;
     void setMouseSensitivity(int value);
 
-signals:
-
-public slots:
-
 protected:
     void resizeEvent(QResizeEvent *event);
     bool eventFilter(QObject *obj, QEvent *event);
+
+private:
+    bool      filterObjsPressed;
+    QPoint    filterObjsLastPressedPoint;
 
 private:
     int        mouseSensitivity; // Õœ∂Ø¡È√Ù∂»
