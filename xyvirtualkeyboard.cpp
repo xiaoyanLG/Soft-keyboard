@@ -289,7 +289,7 @@ void XYVirtualKeyboard::funcClicked(const QString &text, int index)
         QString filepath = QFileDialog::getOpenFileName(this);
         if (!filepath.isEmpty())
         {
-            XYSKIN->loadSkipWithFile(filepath);
+            XYSKIN->loadSkinWithFile(filepath);
             update();
         }
         break;

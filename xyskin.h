@@ -42,9 +42,9 @@ public:
     static XYSkin *getInstance();
     ~XYSkin();
     KeyButtonStyle *getStyleByKey(int key, bool pressed);
-    void initWithNoSkipFile();
-    bool loadSkipWithFile(const QString &filePath);
-    bool writeSkipToFile(const QString &filePath);
+    void initWithNoSkinFile();
+    bool loadSkinWithFile(const QString &filePath);
+    bool writeSkinToFile(const QString &filePath);
 
 signals:
     void skinChanged();

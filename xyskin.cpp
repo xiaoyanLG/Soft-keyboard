@@ -9,10 +9,10 @@ XYSkin *XYSkin::instance = NULL;
 XYSkin::XYSkin(QObject *parent)
     : QObject(parent)
 {
-    initWithNoSkipFile();
+    initWithNoSkinFile();
 }
 
-void XYSkin::initWithNoSkipFile()
+void XYSkin::initWithNoSkinFile()
 {
     QFont font;
     font.setPixelSize(18);
@@ -132,7 +132,7 @@ KeyButtonStyle *XYSkin::getStyleByKey(int key, bool pressed)
     }
 }
 
-bool XYSkin::loadSkipWithFile(const QString &filePath)
+bool XYSkin::loadSkinWithFile(const QString &filePath)
 {
     QString path = filePath;
     QFile file(path);
@@ -210,7 +210,7 @@ bool XYSkin::loadSkipWithFile(const QString &filePath)
     return true;
 }
 
-bool XYSkin::writeSkipToFile(const QString &filePath)
+bool XYSkin::writeSkinToFile(const QString &filePath)
 {
     QDomDocument doc;
     QDomElement root = doc.createElement("XYInputMethod");

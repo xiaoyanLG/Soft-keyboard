@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
 //    XYSKIN->writeSkipToFile("I:/DeskTop/test.skin");
-    XYSKIN->loadSkipWithFile(qApp->applicationDirPath() + "/skin/xyinput.skin");
+    XYSKIN->loadSkinWithFile(qApp->applicationDirPath() + "/skin/xyinput.skin");
     XYVirtualKeyboard::getInstance()->show();
 
 #ifdef TEST
