@@ -56,8 +56,10 @@ void XYVirtualKeyboard::initPinyinDictionary()
                                  +  "/../../Soft-keyboard/libgooglepinyin/dict");
     }
 #endif
-    if (!ret) {
-        QMessageBox::warning(NULL, "warning", "Load lexicon failed!", QMessageBox::Ok);
+
+    if (!ret)
+    {
+        qDebug() << Q_FUNC_INFO << __LINE__ << "Load lexicon failed!";
     }
 }
 
@@ -69,8 +71,13 @@ void XYVirtualKeyboard::switchLanguage()
     clear_history();
 }
 
-void XYVirtualKeyboard::keyEventHandle(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press)
+bool XYVirtualKeyboard::handleQKeyEvent(QKeyEvent *event)
 {
+    int key = event->key();
+    int unicode = event->text().isEmpty() ? key : event->text().at(0).unicode();
+    Qt::KeyboardModifiers modifiers = event->modifiers();
+    bool press = event->type() == QEvent::KeyPress;
+
     if (XYPushButton::chinese)
     {
         if (press && modifiers == 0)
@@ -80,24 +87,24 @@ void XYVirtualKeyboard::keyEventHandle(int unicode, int key, Qt::KeyboardModifie
             case Qt::Key_Space:
                 if (space_clicked())
                 {
-                    return;
+                    return true;
                 }
             case Qt::Key_Backspace:
                 if (backspace_clicked())
                 {
-                    return;
+                    return true;
                 }
             case Qt::Key_Enter:
             case Qt::Key_Return:
                 if (enter_clicked())
                 {
-                    return;
+                    return true;
                 }
             default:
                 if (Qt::Key_A <= key && key <= Qt::Key_Z)
                 {
                     a2zkey_clicked(unicode, key);
-                    return;
+                    return true;
                 }
                 else if (Qt::Key_1 <= key && key <= Qt::Key_9)
                 {
@@ -105,14 +112,30 @@ void XYVirtualKeyboard::keyEventHandle(int unicode, int key, Qt::KeyboardModifie
                     if (translateHView->dataStrings.size() > index)
                     {
                         userSelectChinese(translateHView->dataStrings.at(index), index);
-                        return;
+                        return true;
                     }
                 }
             }
         }
     }
 
+    return false;
+}
+
+bool XYVirtualKeyboard::keyEventHandle(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press)
+{
+    QKeyEvent event(press ? QEvent::KeyPress : QEvent::KeyRelease,
+                    key,
+                    modifiers,
+                    QChar(unicode));
+
+    if (handleQKeyEvent(&event))
+    {
+        return true;
+    }
+
     emit keyClicked(unicode, key, modifiers, press);
+    return false;
 }
 
 void XYVirtualKeyboard::showLetterWidget()
@@ -167,7 +190,7 @@ void XYVirtualKeyboard::triangleBtnClickedOP()
         }
         else
         {
-            qApp->quit();
+            close();
         }
     }
     else
@@ -893,7 +916,6 @@ XYVirtualKeyboard::XYVirtualKeyboard(QWidget *parent)
     connect(XYSKIN, SIGNAL(skinChanged()), this, SLOT(skinChanged()));
     caseChanged(false);
     skinChanged();
-    initPinyinDictionary();
 }
 
 bool XYVirtualKeyboard::a2zkey_clicked(int unicode, int key)
@@ -983,8 +1005,6 @@ bool XYVirtualKeyboard::backspace_clicked()
 
 bool XYVirtualKeyboard::space_clicked()
 {
-#ifdef XYINPUT
-#else
     if (letterLabel->text().isEmpty())
     {
         return false;
@@ -994,7 +1014,7 @@ bool XYVirtualKeyboard::space_clicked()
     {
         userSelectChinese(translateHView->dataStrings.at(0), 0);
     }
-#endif
+
     return true;
 }
 
@@ -1019,7 +1039,6 @@ void XYVirtualKeyboard::search_begin(const QString &keywords)
     foreach (XYTranslateItem *temp, lists) {
         translateHView->dataStrings.append(temp->msTranslate);
     }
-#else
 #endif
     translateHDragableWidget->setHidden(false);
     funcDragableWidget->setHidden(true);
@@ -1030,8 +1049,7 @@ void XYVirtualKeyboard::search_begin(const QString &keywords)
 
 void XYVirtualKeyboard::search_closure()
 {
-#ifdef XYINPUT
-#else
+#ifndef XYINPUT
     unsigned index;
     QString update;
 
@@ -1074,8 +1092,7 @@ void XYVirtualKeyboard::clear_history()
 
 void XYVirtualKeyboard::loadLetterLabel()
 {
-#ifdef XYINPUT
-#else
+#ifndef XYINPUT
     QString text;
     unsigned index = googlePinyin->cur_search_pos(); // get current search position in spell_str
 

@@ -100,8 +100,8 @@ bool pinyin_im::init(const QString &dir, int max_spell_len, int max_output_len)
     if (app_dir.isEmpty()) {
         app_dir = qApp->applicationDirPath() + "/dict";
     }
-    ret = im_open_decoder(QString("%1/"DICT_PATH).arg(app_dir).toLocal8Bit().data(),
-                          QString("%1/"DICT_USER_PATH).arg(app_dir).toLocal8Bit().data());
+    ret = im_open_decoder(QString("%1/" DICT_PATH).arg(app_dir).toLocal8Bit().data(),
+                          QString("%1/" DICT_USER_PATH).arg(app_dir).toLocal8Bit().data());
     enable = ret;
     if (ret == false) {
         return ret;

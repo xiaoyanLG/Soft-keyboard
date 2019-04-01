@@ -386,7 +386,7 @@ void XYPushButton::mouseReleaseedOP(bool alwaysEmit, bool contansMouse)
                 modifiers |= Qt::ShiftModifier;
                 break;
             case Qt::Key_Meta:
-    //                    modifiers |= Qt::MetaModifier;
+//                modifiers |= Qt::MetaModifier;
                 break;
             case Qt::Key_Control:
                 modifiers |= Qt::ControlModifier;
@@ -415,7 +415,7 @@ void XYPushButton::mouseReleaseedOP(bool alwaysEmit, bool contansMouse)
                 modifiers &= !Qt::ShiftModifier;
                 break;
             case Qt::Key_Meta:
-    //                    modifiers &= !Qt::MetaModifier;
+//                modifiers &= !Qt::MetaModifier;
                 break;
             case Qt::Key_Control:
                 modifiers &= !Qt::ControlModifier;

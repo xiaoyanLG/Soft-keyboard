@@ -1,42 +1,18 @@
 ﻿#include <QApplication>
-#include "xykeyboardfilter.h"
 #include "xyvirtualkeyboard.h"
 #include "xyskin.h"
 #include <QIcon>
+#include <QDebug>
 
 #define TEST
 #ifdef TEST
-#include <QDebug>
+#include <QWindow>
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QInputMethodEvent>
-
-static void sendPreeditText(const QString &text)
-{
-    QInputMethodEvent *event =
-            new QInputMethodEvent(text, QList<QInputMethodEvent::Attribute>());
-    qApp->postEvent(qApp->focusWidget(), event);
-}
-
-static void sendCommitText(const QString &text)
-{
-    QInputMethodEvent *event = new QInputMethodEvent;
-    event->setCommitString(text);
-    qApp->postEvent(qApp->focusWidget(), event);
-}
-
-static void sendKeyEvent(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press)
-{
-    QKeyEvent *event = new QKeyEvent(press ? QEvent::KeyPress : QEvent::KeyRelease,
-                                     key,
-                                     modifiers,
-                                     QChar(unicode));
-    qApp->postEvent(qApp->focusWidget(), event);
-}
-
 #endif
-#include <QDebug>
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -53,12 +29,39 @@ int main(int argc, char *argv[])
     layout->addWidget(new QTextEdit);
     layout->addWidget(new QLineEdit);
     widget.show();
+
     QObject::connect(XYVirtualKeyboard::getInstance(),
-                     &XYVirtualKeyboard::send_preedit, &sendPreeditText);
+                     &XYVirtualKeyboard::send_preedit, [](const QString &text){
+        QInputMethodEvent *event =
+                new QInputMethodEvent(text, QList<QInputMethodEvent::Attribute>());
+        const QGuiApplication *app = qApp;
+        QWindow *focusWindow = app ? app->focusWindow() : 0;
+        if (focusWindow) {
+            app->postEvent(focusWindow, event);
+        }
+    });
     QObject::connect(XYVirtualKeyboard::getInstance(),
-                     &XYVirtualKeyboard::send_commit, &sendCommitText);
+                     &XYVirtualKeyboard::send_commit, [](const QString &text){
+        QInputMethodEvent *event = new QInputMethodEvent;
+        event->setCommitString(text);
+        const QApplication *app = qApp;
+        QWindow *focusWindow = app ? app->focusWindow() : 0;
+        if (focusWindow) {
+            app->postEvent(focusWindow, event);
+        }
+    });
     QObject::connect(XYVirtualKeyboard::getInstance(),
-                     &XYVirtualKeyboard::keyClicked, &sendKeyEvent);
+                     &XYVirtualKeyboard::keyClicked, [](int unicode, int key, Qt::KeyboardModifiers modifiers, bool press){
+        QKeyEvent *event = new QKeyEvent(press ? QEvent::KeyPress : QEvent::KeyRelease,
+                                         key,
+                                         modifiers,
+                                         QChar(unicode));
+        const QApplication *app = qApp;
+        QWindow *focusWindow = app ? app->focusWindow() : 0;
+        if (focusWindow) {
+            app->postEvent(focusWindow, event);
+        }
+    });
 #endif
 
     a.setQuitOnLastWindowClosed(true);

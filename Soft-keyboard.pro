@@ -8,13 +8,10 @@ QT       += core gui sql xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = XYInputMethod
-TEMPLATE = app
-
 INCLUDEPATH += chineseInput
+QMAKE_CXXFLAGS += -std=c++11
 
-SOURCES += main.cpp \
-    xykeyboardfilter.cpp \
+SOURCES  += \
     xyvirtualkeyboard.cpp \
     xypushbutton.cpp \
     xydragablewidget.cpp \
@@ -28,7 +25,6 @@ SOURCES += main.cpp \
     xytempwindows.cpp
 
 HEADERS  += \
-    xykeyboardfilter.h \
     xyvirtualkeyboard.h \
     xypushbutton.h \
     xydragablewidget.h \
@@ -41,7 +37,26 @@ HEADERS  += \
     xyskin.h \
     xytempwindows.h
 
-QMAKE_CXXFLAGS += -std=c++11
+# 这里区分当前编译类型
+DEFINES += THIS_IS_PLUGIN
+if(contains(DEFINES,THIS_IS_PLUGIN)){
+TEMPLATE = lib
+QT += gui-private
+CONFIG += plugin
+
+SOURCES  += \
+    xyplatforminputcontext.cpp \
+    xyinputplugin.cpp
+
+HEADERS  += \
+    xyplatforminputcontext.h \
+    xyinputplugin.h
+
+} else {
+TEMPLATE = app
+SOURCES  += \
+    main.cpp
+}
 
 greaterThan(QT_MAJOR_VERSION, 4): RC_FILE = ico.rc
 

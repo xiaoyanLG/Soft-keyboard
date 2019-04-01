@@ -41,7 +41,8 @@ signals:
     void keyClicked(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
 
 public slots:
-    void keyEventHandle(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
+    bool handleQKeyEvent(QKeyEvent *event);
+    bool keyEventHandle(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
     void showLetterWidget();
     void showNumberWidget();
     void languageChanged();
