@@ -166,7 +166,7 @@ bool XYDatabaseOperation::insertData(XYTranslateItem *item, const QString &table
 
     // 先查找词组是否存在
     query.prepare(QString("SELECT id, %1, %2, extra, times, stick FROM %3 "
-                          "WHERE %4 like \"%5\" AND %6 like \"%7\";")
+                          "WHERE %4 = \"%5\" AND %6 = \"%7\";")
                   .arg(field1)
                   .arg(field2)
                   .arg(table)
