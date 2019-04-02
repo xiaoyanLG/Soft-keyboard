@@ -115,17 +115,20 @@ bool XYDatabaseOperation::createInputTable()
     }
 
     // 英文表
-    ok = query.exec("CREATE TABLE IF NOT EXISTS  englishTable ("
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    "english VARCHAR NOT NULL,"
-                    "translate VARCHAR NOT NULL,"
-                    "extra VARCHAR NULL,"
-                    "times INTEGER NOT NULL,"
-                    "stick BOOL NULL);");
-    if (!ok)
+    for (int i = 'A'; i <= 'Z'; ++i)
     {
-        qDebug("error: %s", query.lastError().text().toUtf8().data());
-        return false;
+        ok = query.exec(QString("CREATE TABLE IF NOT EXISTS  englishTable_%1 ("
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        "english VARCHAR NOT NULL,"
+                        "translate VARCHAR NOT NULL,"
+                        "extra VARCHAR NULL,"
+                        "times INTEGER NOT NULL,"
+                        "stick BOOL NULL);").arg(QChar(i)));
+        if (!ok)
+        {
+            qDebug("error: %s", query.lastError().text().toUtf8().data());
+            return false;
+        }
     }
 
     // 英文用户表
@@ -162,31 +165,31 @@ bool XYDatabaseOperation::insertData(XYTranslateItem *item, const QString &table
     bool ok = true;
 
     // 先查找词组是否存在
-//    query.prepare(QString("SELECT id, %1, %2, extra, times, stick FROM %3 "
-//                          "WHERE %4 like \"%5\" AND %6 like \"%7\";")
-//                  .arg(field1)
-//                  .arg(field2)
-//                  .arg(table)
-//                  .arg(field1)
-//                  .arg(item->msComplete)
-//                  .arg(field2)
-//                  .arg(item->msTranslate));
-//    ok = query.exec();
-//    if (!ok)
-//    {
-//        qDebug("error: %s", query.lastError().text().toUtf8().data());
-//    }
+    query.prepare(QString("SELECT id, %1, %2, extra, times, stick FROM %3 "
+                          "WHERE %4 like \"%5\" AND %6 like \"%7\";")
+                  .arg(field1)
+                  .arg(field2)
+                  .arg(table)
+                  .arg(field1)
+                  .arg(item->msComplete)
+                  .arg(field2)
+                  .arg(item->msTranslate));
+    ok = query.exec();
+    if (!ok)
+    {
+        qDebug("error: %s", query.lastError().text().toUtf8().data());
+    }
 
-//    int id = -1;
-//    int times = 1;
-//    while (query.next())
-//    {
-//        id = query.value(0).toInt();
-//        times = query.value(4).toInt();
-//        break;
-//    }
+    int id = -1;
+    int times = 1;
+    while (query.next())
+    {
+        id = query.value(0).toInt();
+        times = query.value(4).toInt();
+        break;
+    }
 
-    if (1)
+    if (id == -1)
     {
         query.prepare(QString("INSERT INTO %1 (id, %2, %3, extra, times, stick) "
                               "VALUES (:id, :%4, :%5, :extra, :times, :stick);")
@@ -208,7 +211,7 @@ bool XYDatabaseOperation::insertData(XYTranslateItem *item, const QString &table
                       .arg(table)
                       .arg(item->miTimes)
                       .arg(item->mbStick)
-                      .arg(1));
+                      .arg(id));
         ok = query.exec();
     }
     if (!ok)
@@ -302,7 +305,8 @@ QList<XYTranslateItem *> XYDatabaseOperation::findData(const QString &key, const
     }
 
     QString table_fact = table;
-    if (table_fact == "basePinyin" && !key.isEmpty())
+    if ((table_fact == "basePinyin" || table_fact == "englishTable")
+            && !key.isEmpty())
     {
         if (!key.at(0).isLetter() || number.toInt() > 6) // 如果都不以字母开头或者超过6个字查找，肯定找不到，直接返回
         {
@@ -318,6 +322,7 @@ QList<XYTranslateItem *> XYDatabaseOperation::findData(const QString &key, const
             table_fact += QString("_%1").arg(key.at(0).toUpper());
         }
     }
+
     QString field1, field2;
     if (table.toLower().contains("english"))
     {
