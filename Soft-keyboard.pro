@@ -38,7 +38,7 @@ HEADERS  += \
     xytempwindows.h
 
 # 这里区分当前编译类型
-DEFINES += THIS_IS_PLUGIN
+#DEFINES += THIS_IS_PLUGIN
 if(contains(DEFINES,THIS_IS_PLUGIN)){
 TEMPLATE = lib
 QT += gui-private
