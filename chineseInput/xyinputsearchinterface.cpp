@@ -102,9 +102,9 @@ void XYInputSearchInterface::setChinese(bool ch)
 
 QString XYInputSearchInterface::splitePinyin(const QString &pinyin, int &num)
 {
-    QString shenmu = "bpmfdtnlgkhjqxzcsywr";
-    QStringList zcs = QString("z c s").split(" ");
-    QStringList yunmuA = QString("a o e ai ao ou ei er an ang en eng").split(" ");
+    static QString shenmu = "bpmfdtnlgkhjqxzcsywr";
+    static QStringList zcs = QString("z c s").split(" ");
+    static QStringList yunmuA = QString("a o e ai ao ou ei er an ang en eng").split(" ");
 
     QString result;
 
@@ -176,9 +176,10 @@ QString XYInputSearchInterface::splitePinyin(const QString &pinyin, int &num)
         }
         else
         {
-            if (result.endsWith("g") // 如果是特殊的几个韵母结束的，到这里应该截取下来，重新匹配
+            if ( result.size() > 1 &&
+                    (result.endsWith("g") // 如果是特殊的几个韵母结束的，到这里应该截取下来，重新匹配
                     || result.endsWith("n")
-                    || result.endsWith("r") )
+                    || result.endsWith("r")) )
             {
                 int last_index = result.lastIndexOf("%\'");
                 QString last;
@@ -478,6 +479,11 @@ void XYInputSearchInterface::clearTemp()
 
 QStringList XYInputSearchInterface::getYunMuByShengMu(const QChar &shenmu)
 {
+    static QMap<QChar, QStringList> Allyunmus;
+    if (Allyunmus.find(shenmu) != Allyunmus.end()) {
+        return Allyunmus[shenmu];
+    }
+    
     QStringList yunmu;
     switch (shenmu.toLatin1()) // 单独为每一个声母指定可匹配的韵母
     {
@@ -535,6 +541,7 @@ QStringList XYInputSearchInterface::getYunMuByShengMu(const QChar &shenmu)
         break;
     }
 
+    Allyunmus.insert(shenmu, yunmu);
     return yunmu;
 }
 
