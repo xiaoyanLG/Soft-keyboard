@@ -30,7 +30,7 @@ public slots:
     QList<XYTranslateItem *> findPossibleMust(const QString &keyword, int max = 200);
     void saveItem(XYTranslateItem *item);
     void clearTemp();
-    QStringList getYunMuByShengMu(const QChar &shenmu);
+    const QStringList &getYunMuByShengMu(const QChar &shenmu);
     QList<XYTranslateItem *> &completeInput(const QString &text, int index, QString &showText);
     QList<XYTranslateItem *> &completeInput(const QString &text, QString &showText, XYTranslateItem *item = NULL);
 
