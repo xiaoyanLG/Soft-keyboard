@@ -480,8 +480,9 @@ void XYInputSearchInterface::clearTemp()
 QStringList XYInputSearchInterface::getYunMuByShengMu(const QChar &shenmu)
 {
     static QMap<QChar, QStringList> Allyunmus;
-    if (Allyunmus.find(shenmu) != Allyunmus.end()) {
-        return Allyunmus[shenmu];
+    auto it = Allyunmus.find(shenmu);
+    if ( it != Allyunmus.end()) {
+        return it.value();
     }
     
     QStringList yunmu;
