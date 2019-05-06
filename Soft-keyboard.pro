@@ -58,7 +58,9 @@ SOURCES  += \
     main.cpp
 }
 
+msvc {
 greaterThan(QT_MAJOR_VERSION, 4): RC_FILE = ico.rc
+}
 
 RESOURCES += \
     images/images.qrc \
