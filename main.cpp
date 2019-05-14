@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
                      XYVirtualKeyboard::getInstance(), [](){
         QWindow *focusWindow = qApp->focusWindow();
         if (focusWindow && qApp->focusWidget() && !XYVirtualKeyboard::getInstance()->isVisible()) {
-            QRect rect = qApp->inputMethod()->anchorRectangle().toRect().translated(focusWindow->position());
+            QRect rect = qApp->inputMethod()->cursorRectangle().toRect().translated(focusWindow->position());
             XYVirtualKeyboard::getInstance()->move(rect.bottomLeft() + QPoint(0, 5));
             XYVirtualKeyboard::getInstance()->show();
         }
