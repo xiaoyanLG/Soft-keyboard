@@ -43,14 +43,6 @@ bool XYPushButton::isChinese()
     return chinese;
 }
 
-void XYPushButton::resizeAllPerfect(const QSize &size)
-{
-    for (int i = 0; i < allKeyBtns.size(); ++i)
-    {
-        allKeyBtns.at(i)->resizePerfect(size);
-    }
-}
-
 QString XYPushButton::EnText()
 {
     return QString::fromUtf8("En");
@@ -68,34 +60,6 @@ QString XYPushButton::zhongText()
 QSize XYPushButton::sizeHint() const
 {
     return QSize(60, 38);
-}
-
-void XYPushButton::resizePerfect(const QSize &size)
-{
-    int w = size.width() / 10;
-    switch (generalKey)
-    {
-//    case Qt::Key_Tab:
-//        setMinimumWidth(w * 1.5);
-//        break;
-//    case Qt::Key_CapsLock:
-//        setMinimumWidth(w * 1.8);
-//        break;
-//    case Qt::Key_Backspace:
-//        setMinimumWidth(w * 1.5);
-//        break;
-//    case Qt::Key_Return:
-//        setMinimumWidth(w * 1.8);
-//        break;
-//    case Qt::Key_Shift:
-//        setMinimumWidth(w * 2.2);
-//        break;
-    case Qt::Key_Space:
-        setMinimumWidth(w * 2 - 5);
-        break;
-    default:
-        break;
-    }
 }
 
 void XYPushButton::setCheckable(bool checkable)
