@@ -9,11 +9,11 @@
 #include <QDebug>
 
 XYPlatformInputContext::XYPlatformInputContext() :
-    m_focusObject(0),
+    m_focusObject(Q_NULLPTR),
     m_locale(),
-    m_inputDirection(m_locale.textDirection()),
-    m_filterEvent(0),
-    m_visible(false)
+    m_filterEvent(Q_NULLPTR),
+    m_visible(false),
+    m_inputDirection(m_locale.textDirection())
 {
     m_inputPanel = XYVirtualKeyboard::getInstance(); 
     m_inputPanel->initPinyinDictionary();
@@ -24,7 +24,7 @@ XYPlatformInputContext::XYPlatformInputContext() :
             QInputMethodEvent event(text, QList<QInputMethodEvent::Attribute>());
             m_filterEvent = &event;
             qApp->sendEvent(focusObject(), &event);
-            m_filterEvent = nullptr;
+            m_filterEvent = Q_NULLPTR;
         }
     });
     QObject::connect(m_inputPanel, &XYVirtualKeyboard::send_commit,
@@ -34,7 +34,7 @@ XYPlatformInputContext::XYPlatformInputContext() :
             event.setCommitString(text);
             m_filterEvent = &event;
             qApp->sendEvent(focusObject(), &event);
-            m_filterEvent = nullptr;
+            m_filterEvent = Q_NULLPTR;
         }
     });
     QObject::connect(m_inputPanel, &XYVirtualKeyboard::keyClicked,
@@ -46,14 +46,14 @@ XYPlatformInputContext::XYPlatformInputContext() :
                             QChar(unicode));
             m_filterEvent = &event;
             qApp->sendEvent(focusObject(), &event);
-            m_filterEvent = nullptr;
+            m_filterEvent = Q_NULLPTR;
         }
     });
 
     QObject::connect(qApp->inputMethod(), &QInputMethod::anchorRectangleChanged,
                      this, [this](){
         const QGuiApplication *app = qApp;
-        QWindow *focusWindow = app ? app->focusWindow() : 0;
+        QWindow *focusWindow = app ? app->focusWindow() : Q_NULLPTR;
         if (focusWindow) {
             this->m_anchorRect = app->inputMethod()->anchorRectangle().toRect().translated(focusWindow->position());
         }

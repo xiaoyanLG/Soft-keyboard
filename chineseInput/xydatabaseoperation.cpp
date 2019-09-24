@@ -7,10 +7,10 @@
 #include <QVariant>
 #include <QDebug>
 
-XYDatabaseOperation *XYDatabaseOperation::DB = NULL;
+XYDatabaseOperation *XYDatabaseOperation::DB = Q_NULLPTR;
 XYDatabaseOperation *XYDatabaseOperation::getInstance()
 {
-    if (DB == NULL)
+    if (DB == Q_NULLPTR)
     {
         DB = new XYDatabaseOperation;
     }

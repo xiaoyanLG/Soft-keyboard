@@ -2,23 +2,22 @@
 #include "xyskin.h"
 #include <QPainter>
 #include <QMouseEvent>
-#include <QApplication>
 //#include <QDebug>
 
 bool XYPushButton::capsLocked = false;
 bool XYPushButton::numLocked = false;
 bool XYPushButton::chinese = false;
 QList<XYPushButton *> XYPushButton::allKeyBtns;
-Qt::KeyboardModifiers XYPushButton::modifiers = 0;
+Qt::KeyboardModifiers XYPushButton::modifiers = Q_NULLPTR;
 XYPushButton::XYPushButton(const QString &text, int generalKey, int shiftKey, bool small, QWidget *parent)
     : QLabel(text, parent),
-      generalKey(generalKey),
-      shiftKey(shiftKey),
-      isSmallAreaKey(small),
+      checkable(false),
       checked(false),
       pressed(false),
-      checkable(false),
-      repeatEmitTimer(0)
+      isSmallAreaKey(small),
+      repeatEmitTimer(0),
+      shiftKey(shiftKey),
+      generalKey(generalKey)
 {
     timer.setSingleShot(true);
     timer.setInterval(2000);
@@ -89,7 +88,7 @@ void XYPushButton::setChecked(bool checked)
     update();
 }
 
-void XYPushButton::paintEvent(QPaintEvent *event)
+void XYPushButton::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -457,8 +456,8 @@ void XYPushButton::mouseReleaseedOP(bool alwaysEmit, bool contansMouse)
 
 void XYPushButton::drawIconWithKey(QPainterPath &path, int key, const QRect &rect)
 {
-    int beginX;
-    int beginY;
+    qreal beginX;
+    qreal beginY;
     qreal x_10 = rect.width() / 10;
     qreal y_10 = rect.height() / 10;
     switch (key)

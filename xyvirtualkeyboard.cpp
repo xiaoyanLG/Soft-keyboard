@@ -26,11 +26,11 @@
 
 #define XYINPUT    // 如果不定义使用google引擎
 
-XYVirtualKeyboard *XYVirtualKeyboard::instance = NULL;
+XYVirtualKeyboard *XYVirtualKeyboard::instance = Q_NULLPTR;
 
 XYVirtualKeyboard *XYVirtualKeyboard::getInstance()
 {
-    if (instance == NULL)
+    if (instance == Q_NULLPTR)
     {
         instance = new XYVirtualKeyboard;
     }
@@ -80,7 +80,7 @@ bool XYVirtualKeyboard::handleQKeyEvent(QKeyEvent *event)
 
     if (XYPushButton::chinese)
     {
-        if (press && modifiers == 0)
+        if (press && modifiers == Qt::NoModifier)
         {
             switch (key)
             {
@@ -89,17 +89,20 @@ bool XYVirtualKeyboard::handleQKeyEvent(QKeyEvent *event)
                 {
                     return true;
                 }
+                break;
             case Qt::Key_Backspace:
                 if (backspace_clicked())
                 {
                     return true;
                 }
+                break;
             case Qt::Key_Enter:
             case Qt::Key_Return:
                 if (enter_clicked())
                 {
                     return true;
                 }
+                break;
             default:
                 if (Qt::Key_A <= key && key <= Qt::Key_Z)
                 {
@@ -115,6 +118,7 @@ bool XYVirtualKeyboard::handleQKeyEvent(QKeyEvent *event)
                         return true;
                     }
                 }
+                break;
             }
         }
     }
@@ -221,8 +225,8 @@ void XYVirtualKeyboard::keyReleaseed(XYPushButton *key)
 
 void XYVirtualKeyboard::showTempWindow(const QString &text, const QPoint &pos)
 {
-    static XYTempWindows *lab = NULL;
-    if (lab == NULL)
+    static XYTempWindows *lab = Q_NULLPTR;
+    if (lab == Q_NULLPTR)
     {
         lab = new XYTempWindows;
     }
@@ -232,15 +236,15 @@ void XYVirtualKeyboard::showTempWindow(const QString &text, const QPoint &pos)
     {
         QFontMetrics metrics(lab->font());
         lab->resize(qMax(metrics.width(text) + 30, 50), qMax(metrics.height() + 20, 40));
-        QPoint move_pos = pos - QPoint(0, lab->height() * 1.5);
+        QPoint move_pos = pos - QPoint(0, qRound(lab->height() * 1.5));
         if (move_pos.y() < 0)
         {
-            move_pos = pos - QPoint(lab->width() * 1.5, 0);
+            move_pos = pos - QPoint(qRound(lab->width() * 1.5), 0);
             lab->setDirection(XYTempWindows::RIGHT);
         }
         if (move_pos.x() < 0)
         {
-            move_pos = pos + QPoint(-10, lab->height() * 1.3);
+            move_pos = pos + QPoint(-10, qRound(lab->height() * 1.3));
             lab->setDirection(XYTempWindows::TOP);
         }
         if (lab->width() + move_pos.x() > qApp->desktop()->width())
@@ -259,8 +263,8 @@ void XYVirtualKeyboard::showTempWindow(const QString &text, const QPoint &pos)
 
 void XYVirtualKeyboard::showTempWindow(XYPushButton *key, bool press)
 {
-    static XYTempWindows *lab = NULL;
-    if (lab == NULL)
+    static XYTempWindows *lab = Q_NULLPTR;
+    if (lab == Q_NULLPTR)
     {
         lab = new XYTempWindows;
     }
@@ -269,10 +273,11 @@ void XYVirtualKeyboard::showTempWindow(XYPushButton *key, bool press)
 
     if (lab && !lab->isVisible() && press)
     {
-        lab->resize(key->size().width() * 1.4, key->size().height() * 1.6);
+        lab->resize(qRound(key->size().width() * 1.4),
+                    qRound(key->size().height() * 1.6));
         lab->setText(key->text());
-        QPoint move_pos = mapToGlobal(key->pos()) - QPoint(10,
-                                                           lab->height() * 0.5);
+        QPoint move_pos = mapToGlobal(key->pos()) -
+                QPoint(10, qRound(lab->height() * 0.5));
 
         if (move_pos.y() < 0)
         {
@@ -286,7 +291,7 @@ void XYVirtualKeyboard::showTempWindow(XYPushButton *key, bool press)
         }
         else if (move_pos.x() < -10)
         {
-            move_pos = key->pos() + QPoint(0, lab->height() * 1.8);
+            move_pos = key->pos() + QPoint(0, qRound(lab->height() * 1.8));
             lab->setDirection(XYTempWindows::TOP);
         }
 
@@ -465,7 +470,7 @@ void XYVirtualKeyboard::mouseMoveEvent(QMouseEvent *event)
 
 bool XYVirtualKeyboard::eventFilter(QObject *obj, QEvent *event)
 {
-    static XYPushButton *lastBtn_containsMouse = NULL;
+    static XYPushButton *lastBtn_containsMouse = Q_NULLPTR;
     if (event->type() == QEvent::MouseMove)
     {
         QMouseEvent *mouse_event = (QMouseEvent *)event;
@@ -473,19 +478,19 @@ bool XYVirtualKeyboard::eventFilter(QObject *obj, QEvent *event)
         {
             XYPushButton *receiversBtn = qobject_cast<XYPushButton *>(obj);
             XYPushButton *btn = qobject_cast<XYPushButton *>(childAt(mapFromGlobal(mouse_event->globalPos())));
-            if (btn != NULL && (lastBtn_containsMouse == NULL
+            if (btn != Q_NULLPTR && (lastBtn_containsMouse == Q_NULLPTR
                                 || lastBtn_containsMouse != btn))
             {
-                if (lastBtn_containsMouse != NULL)
+                if (lastBtn_containsMouse != Q_NULLPTR)
                 {
                     lastBtn_containsMouse->mouseReleaseedOP(true, false);
                 }
                 btn->mousePressedOP();
                 lastBtn_containsMouse = btn;
             }
-            else if (btn == NULL)
+            else if (btn == Q_NULLPTR)
             {
-                if (lastBtn_containsMouse != NULL)
+                if (lastBtn_containsMouse != Q_NULLPTR)
                 {
                     lastBtn_containsMouse->mouseReleaseedOP(true, false);
                 }
@@ -493,7 +498,7 @@ bool XYVirtualKeyboard::eventFilter(QObject *obj, QEvent *event)
                 {
                     receiversBtn->mouseReleaseedOP(true, false);
                 }
-                lastBtn_containsMouse = NULL;
+                lastBtn_containsMouse = Q_NULLPTR;
             }
             return true;
         }
@@ -503,7 +508,7 @@ bool XYVirtualKeyboard::eventFilter(QObject *obj, QEvent *event)
         QMouseEvent *mouse_event = (QMouseEvent *)event;
         if (mouse_event->button() == Qt::LeftButton)
         {
-            if (lastBtn_containsMouse != NULL)
+            if (lastBtn_containsMouse != Q_NULLPTR)
             {
                 QPoint pos = lastBtn_containsMouse->mapFromGlobal(mouse_event->globalPos());
                 lastBtn_containsMouse->mouseReleaseedOP(true,
@@ -513,7 +518,7 @@ bool XYVirtualKeyboard::eventFilter(QObject *obj, QEvent *event)
             {
                 return QWidget::eventFilter(obj, event);
             }
-            lastBtn_containsMouse = NULL;
+            lastBtn_containsMouse = Q_NULLPTR;
             return true;
         }
     }
@@ -1237,7 +1242,7 @@ bool XYMovableLabel::event(QEvent *event)
     else if (event->type() == QEvent::MouseMove)
     {
         QMouseEvent *mouse_event = static_cast<QMouseEvent *>(event);
-        if (parentWidget() != NULL && pressed)
+        if (parentWidget() != Q_NULLPTR && pressed)
         {
             QPoint movePos(parentWidget()->x() - lastPoint.x() + mouse_event->globalX(),
                            parentWidget()->y() - lastPoint.y() + mouse_event->globalY());

@@ -32,10 +32,10 @@ public slots:
     void clearTemp();
     const QStringList &getYunMuByShengMu(const QChar &shenmu);
     QList<XYTranslateItem *> &completeInput(const QString &text, int index, QString &showText);
-    QList<XYTranslateItem *> &completeInput(const QString &text, QString &showText, XYTranslateItem *item = NULL);
+    QList<XYTranslateItem *> &completeInput(const QString &text, QString &showText, XYTranslateItem *item = Q_NULLPTR);
 
 private:
-    explicit XYInputSearchInterface(QObject *parent = 0);
+    explicit XYInputSearchInterface(QObject *parent = Q_NULLPTR);
     static XYInputSearchInterface *instance;
     bool             mbEnglish;
     XYTranslateItem  moCompleteItem;

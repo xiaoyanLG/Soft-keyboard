@@ -11,7 +11,7 @@ class XYDatabaseOperation : public QObject
     Q_OBJECT
 public:
     static XYDatabaseOperation *getInstance();
-    explicit XYDatabaseOperation(QObject *parent = 0);
+    explicit XYDatabaseOperation(QObject *parent = Q_NULLPTR);
     ~XYDatabaseOperation();
 
     bool createDatabaseFile(const QString &filePath, const QString &passwd = "", bool fource = false);
@@ -24,7 +24,7 @@ public:
     QList<XYTranslateItem *> findData(const QString &key,
                                       const QString &number,
                                       const QString &table,
-                                      bool *haveFind = NULL, int max = 200);
+                                      bool *haveFind = Q_NULLPTR, int max = 200);
 
 private:
     static XYDatabaseOperation *DB;

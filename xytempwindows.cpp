@@ -17,7 +17,7 @@ XYTempWindows::XYTempWindows(XYTempWindows::DIRECTION direction, QWidget *parent
     setFont(XYSKIN->popupButtonStyle->textFont);
 }
 
-void XYTempWindows::paintEvent(QPaintEvent *event)
+void XYTempWindows::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -100,7 +100,7 @@ QPainterPath XYTempWindows::getPainterPath(const QRect &rect, XYTempWindows::DIR
     switch (direction)
     {
     case TOP:
-        arrow_h = rect.height() * 0.1;
+        arrow_h = qRound(rect.height() * 0.1);
         textRect = QRect(rect.x() + 1, rect.y() + arrow_h + 1,
                          rect.width() - 2, rect.height() - arrow_h - 2);
         path.addRoundedRect(textRect, 4, 4);
@@ -109,7 +109,7 @@ QPainterPath XYTempWindows::getPainterPath(const QRect &rect, XYTempWindows::DIR
         path.lineTo(rect.x() + rect.width() / 2 + arrow_h / 2, rect.y() + arrow_h + 1);
         break;
     case BOTTOM:
-        arrow_h = rect.height() * 0.1;
+        arrow_h = qRound(rect.height() * 0.1);
         textRect = QRect(rect.x() + 1, rect.y() + 1,
                          rect.width() - 2, rect.height() - arrow_h - 1);
         path.addRoundedRect(textRect, 4, 4);
@@ -118,7 +118,7 @@ QPainterPath XYTempWindows::getPainterPath(const QRect &rect, XYTempWindows::DIR
         path.lineTo(rect.x() + rect.width() / 2 + arrow_h / 2, rect.y() + rect.height() - arrow_h);
         break;
     case LEFT:
-        arrow_h = rect.height() * 0.1;
+        arrow_h = qRound(rect.height() * 0.1);
         textRect = QRect(rect.x() + arrow_h, rect.y() + 1,
                          rect.width() - arrow_h - 2, rect.height() - 2);
         path.addRoundedRect(textRect, 4, 4);
@@ -127,7 +127,7 @@ QPainterPath XYTempWindows::getPainterPath(const QRect &rect, XYTempWindows::DIR
         path.lineTo(rect.x() + arrow_h, rect.y() + rect.height() / 2 +  arrow_h / 2);
         break;
     case RIGHT:
-        arrow_h = rect.height() * 0.1;
+        arrow_h = qRound(rect.height() * 0.1);
         textRect = QRect(rect.x() + 1, rect.y() + 1,
                          rect.width() - arrow_h - 2, rect.height() - 2);
         path.addRoundedRect(textRect, 4, 4);

@@ -7,5 +7,5 @@ QPlatformInputContext *XYInputPlugin::create(const QString &system, const QStrin
     if (system.compare(QLatin1String("xyinput"), Qt::CaseInsensitive) == 0) {
         return new XYPlatformInputContext();
     }
-    return nullptr;
+    return Q_NULLPTR;
 }

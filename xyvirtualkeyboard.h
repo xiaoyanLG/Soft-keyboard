@@ -15,7 +15,7 @@ class XYMovableLabel: public QLabel
 {
     Q_OBJECT
 public:
-    XYMovableLabel(QWidget *parent = NULL);
+    XYMovableLabel(QWidget *parent = Q_NULLPTR);
 
 public slots:
     void setText(const QString &text);
@@ -36,6 +36,7 @@ public:
     void initPinyinDictionary();
     void switchLanguage();
 
+    // 按键被按下
 signals:
     void triangleBtnClicked();
     void keyClicked(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
@@ -45,10 +46,12 @@ public slots:
     bool keyEventHandle(int unicode, int key, Qt::KeyboardModifiers modifiers, bool press);
     void showLetterWidget();
     void showNumberWidget();
-    void languageChanged();
-    void caseChanged(bool checked);
     void showSymbols();
     void show();
+
+private slots:
+    void languageChanged();
+    void caseChanged(bool checked);
     void triangleBtnClickedOP();
     void keyPressed(XYPushButton *key);
     void keyReleaseed(XYPushButton *key);
@@ -67,19 +70,19 @@ protected:
 
 private:
     enum ResizeType{No, Top, Bottom};
-    explicit XYVirtualKeyboard(QWidget *parent = 0);
+    explicit XYVirtualKeyboard(QWidget *parent = Q_NULLPTR);
     static XYVirtualKeyboard *instance;             // 单例句柄
 
-    QList<XYPushButton *>     allShiftChangeKeys;   // 字母按键
-    XYPushButton              *switchLanguageBtn;   // 语言切换按钮
+    QList<XYPushButton *>      allShiftChangeKeys;   // 字母按键
+    XYPushButton              *switchLanguageBtn;    // 语言切换按钮
     XYDragableWidget          *translateHDragableWidget; // 水平候选词拖拽控件
     XYDragableWidget          *translateVDragableWidget; // 垂直候选词拖拽控件
     XYDragableWidget          *symbolDragableWidget;     // 符号拖拽控件
     XYDragableWidget          *funcDragableWidget;       // 功能拖拽控件
-    QWidget                   *letterWidget;       // 字母控件窗口
-    QWidget                   *numberWidget;       // 数字控件窗口
-    QStackedWidget            *stackedWidget;      // 用来保存字母/数字控制的栈
-    XYMovableLabel            *letterLabel;        // 输入字母显示控件,同时提供对键盘的移动操作
+    QWidget                   *letterWidget;        // 字母控件窗口
+    QWidget                   *numberWidget;        // 数字控件窗口
+    QStackedWidget            *stackedWidget;       // 用来保存字母/数字控制的栈
+    XYMovableLabel            *letterLabel;         // 输入字母显示控件,同时提供对键盘的移动操作
     XYHDragableTranslateView  *translateHView;      // 查询翻译内容展示控件
     XYVDragableTranslateView  *translateVView;      // 查询翻译内容展示控件
     XYVDragableTranslateView  *symbolView;          // 特殊符号展示控件
@@ -96,7 +99,7 @@ signals:
     void send_preedit(const QString &); // send preedit string to input area
     void send_commit(const QString &); // send commit string to input area
 
-public slots:
+private slots:
     bool a2zkey_clicked(int unicode, int key);
     bool backspace_clicked();
     bool space_clicked();

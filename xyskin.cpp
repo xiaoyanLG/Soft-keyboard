@@ -5,7 +5,7 @@
 #include <QTextStream>
 #include <QDebug>
 
-XYSkin *XYSkin::instance = NULL;
+XYSkin *XYSkin::instance = Q_NULLPTR;
 XYSkin::XYSkin(QObject *parent)
     : QObject(parent)
 {
@@ -68,7 +68,7 @@ void XYSkin::initWithNoSkinFile()
 
 XYSkin *XYSkin::getInstance()
 {
-    if (instance == NULL)
+    if (instance == Q_NULLPTR)
     {
         instance = new XYSkin;
     }
@@ -82,7 +82,7 @@ XYSkin::~XYSkin()
 
 KeyButtonStyle *XYSkin::getStyleByKey(int key, bool pressed)
 {
-    KeyButtonStyle *found = NULL;
+    KeyButtonStyle *found = Q_NULLPTR;
     for (int i = 0; i < userDefButtonsStyle.size(); ++i)
     {
         if (key == userDefButtonsStyle.at(i)->key)
@@ -97,7 +97,7 @@ KeyButtonStyle *XYSkin::getStyleByKey(int key, bool pressed)
             }
         }
     }
-    if (found != NULL)
+    if (found != Q_NULLPTR)
     {
         return found;
     }
@@ -265,7 +265,7 @@ bool XYSkin::writeSkinToFile(const QString &filePath)
 
 void XYSkin::loadIntStyle(const QDomElement &parent, int &value)
 {
-    value = parent.attribute("value").toInt(NULL, 16);
+    value = parent.attribute("value").toInt(Q_NULLPTR, 16);
 }
 
 void XYSkin::loadPixmapStyle(const QDomElement &parent, QPixmap &pixmap)
@@ -292,7 +292,7 @@ void XYSkin::loadColorStyle(const QDomElement &parent, QColor &color)
     }
     if (alphaString.size() == 2)
     {
-        color.setAlpha(alphaString.toInt(NULL, 16));
+        color.setAlpha(alphaString.toInt(Q_NULLPTR, 16));
     }
 }
 
