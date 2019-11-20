@@ -50,9 +50,9 @@ QString XYPushButton::EnText()
 QString XYPushButton::zhongText()
 {
 #if QT_VERSION < 0x050000
-            return QString::fromUtf8("中");
+	return QString::fromUtf8("中");
 #else
-            return QStringLiteral("中");
+	return QStringLiteral("中");
 #endif
 }
 

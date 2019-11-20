@@ -7,6 +7,7 @@
 #define TEST
 #ifdef TEST
 #include <QWindow>
+#include <QScreen>
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QVBoxLayout>
@@ -36,7 +37,17 @@ int main(int argc, char *argv[])
         QWindow *focusWindow = qApp->focusWindow();
         if (focusWindow && qApp->focusWidget() && !XYVirtualKeyboard::getInstance()->isVisible()) {
             QRect rect = qApp->inputMethod()->cursorRectangle().toRect().translated(focusWindow->position());
-            XYVirtualKeyboard::getInstance()->move(rect.bottomLeft() + QPoint(0, 5));
+			QPoint pos = rect.bottomLeft() + QPoint(0, 5);
+			QScreen *screen = qApp->screenAt(pos);
+			if (screen == Q_NULLPTR)
+				screen = qApp->primaryScreen();
+
+			if (pos.x() + XYVirtualKeyboard::getInstance()->width() > screen->geometry().width())
+				pos.setX(screen->geometry().width() - XYVirtualKeyboard::getInstance()->width());
+			if (pos.y() + XYVirtualKeyboard::getInstance()->height() > screen->geometry().height())
+				pos.setY(screen->geometry().height() - XYVirtualKeyboard::getInstance()->height());
+
+			XYVirtualKeyboard::getInstance()->move(pos);
             XYVirtualKeyboard::getInstance()->show();
         }
     });
@@ -46,7 +57,7 @@ int main(int argc, char *argv[])
         QInputMethodEvent *event =
                 new QInputMethodEvent(text, QList<QInputMethodEvent::Attribute>());
         const QApplication *app = qApp;
-        QWidget *focusWindow = app ? app->focusWidget() : 0;
+		QWidget *focusWindow = app ? app->focusWidget() : Q_NULLPTR;
         if (focusWindow) {
             app->postEvent(focusWindow, event);
         }
@@ -56,7 +67,7 @@ int main(int argc, char *argv[])
         QInputMethodEvent *event = new QInputMethodEvent;
         event->setCommitString(text);
         const QApplication *app = qApp;
-        QWidget *focusWindow = app ? app->focusWidget() : 0;
+		QWidget *focusWindow = app ? app->focusWidget() : Q_NULLPTR;
         if (focusWindow) {
             app->postEvent(focusWindow, event);
         }
@@ -68,7 +79,7 @@ int main(int argc, char *argv[])
                                          modifiers,
                                          QChar(unicode));
         const QApplication *app = qApp;
-        QWidget *focusWindow = app ? app->focusWidget() : 0;
+		QWidget *focusWindow = app ? app->focusWidget() : Q_NULLPTR;
         if (focusWindow) {
             app->postEvent(focusWindow, event);
         }
