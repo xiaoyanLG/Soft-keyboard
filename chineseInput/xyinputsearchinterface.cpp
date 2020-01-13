@@ -192,7 +192,7 @@ QString XYInputSearchInterface::splitePinyin(const QString &pinyin, int &num)
                     last = result;
                 }
                 last.remove(last.size() - 1, 1);
-                if (getYunMuByShengMu(last.at(0)).contains(last.mid(1))) // 判断截取之后是否是可以组合的拼音
+                if (!last.isEmpty() && getYunMuByShengMu(last.at(0)).contains(last.mid(1))) // 判断截取之后是否是可以组合的拼音
                 {
                     result.remove(result.size() - 1, 1);
                     cur_index -= 1;
@@ -311,7 +311,7 @@ XYTranslateItem *XYInputSearchInterface::autoCreateWords(const QString &keyword)
         }
 
         it = mmapTempItems.find(exists);
-    };
+    }
 
     if (exists == keyword || it == mmapTempItems.end() || it.value().isEmpty())
     {
@@ -361,7 +361,7 @@ XYTranslateItem *XYInputSearchInterface::autoCreateWords(const QString &keyword)
         {
             break;
         }
-    };
+    }
 
     return &moAutoCompleteItem;
 }

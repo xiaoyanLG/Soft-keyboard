@@ -473,7 +473,7 @@ bool XYVirtualKeyboard::eventFilter(QObject *obj, QEvent *event)
     static XYPushButton *lastBtn_containsMouse = Q_NULLPTR;
     if (event->type() == QEvent::MouseMove)
     {
-        QMouseEvent *mouse_event = (QMouseEvent *)event;
+        QMouseEvent *mouse_event = static_cast<QMouseEvent *>(event);
         if (mouse_event->buttons() & Qt::LeftButton)
         {
             XYPushButton *receiversBtn = qobject_cast<XYPushButton *>(obj);
@@ -505,7 +505,7 @@ bool XYVirtualKeyboard::eventFilter(QObject *obj, QEvent *event)
     }
     else if (event->type() == QEvent::MouseButtonRelease)
     {
-        QMouseEvent *mouse_event = (QMouseEvent *)event;
+        QMouseEvent *mouse_event = static_cast<QMouseEvent *>(event);
         if (mouse_event->button() == Qt::LeftButton)
         {
             if (lastBtn_containsMouse != Q_NULLPTR)
@@ -925,15 +925,16 @@ XYVirtualKeyboard::XYVirtualKeyboard(QWidget *parent)
 
 bool XYVirtualKeyboard::a2zkey_clicked(int unicode, int key)
 {
+    if (alreadyInputLetters.size() > 26) // 如果查询内容太长google库崩溃
+    {
+        return true;
+    }
+
 #ifdef XYINPUT
     alreadyInputLetters.append(QChar(unicode).toLower());
     search_begin(alreadyInputLetters);
 #else
     search_begin(alreadyInputLetters);
-    if (alreadyInputLetters.size() > 26) // 如果查询内容太长google库崩溃
-    {
-        return true;
-    }
     alreadyInputLetters += QChar(unicode);
     unsigned cand_num = googlePinyin->search(alreadyInputLetters.toLower());
     translateHView->dataStrings.clear();
